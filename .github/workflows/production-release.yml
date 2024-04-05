@@ -3,7 +3,7 @@ name: tpd
 on:
   push:
     tags:
-      - "v*.*.*"
+      - "*.*.*"
 
 jobs:
   set_version:
