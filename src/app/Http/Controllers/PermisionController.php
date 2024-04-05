@@ -34,11 +34,13 @@ class PermisionController extends Controller
                     'unique:permissions,name'
                 ]
             ]);
-
+    
             Permission::create([
-                'name' => $request->name
+                'name' => $request->name,
+                'description' => $request->description,
+                'parent_id' => $request->parent_id
             ]);
-
+    
             // Return Json Response
             return response()->json([
                 'message' => "permission successfully created."
@@ -52,14 +54,7 @@ class PermisionController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
 
-    /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
@@ -83,6 +78,8 @@ class PermisionController extends Controller
       
             //echo "request : $request->image";
             $Permission->name = $request->name;
+
+            $Permission->description = $request->description;
       
             // Update Product
             $Permission->save();

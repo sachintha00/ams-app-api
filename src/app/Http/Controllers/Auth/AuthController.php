@@ -21,8 +21,9 @@ class AuthController extends Controller
         try {
             if (Auth::attempt(['email' => request('email'), 'password' => request('password')])) {
                 $user = Auth::user();
-                $permissions = $user->getAllPermissions()->load('routes');
-                $routesmain = $user->getAllPermissions()->pluck('routes')->flatten()->unique()->toArray(); 
+
+                $permissions = $user->getAllPermissions()->pluck('name');
+                $sidebaritem = $user->getAllPermissions()->pluck('routes')->flatten()->unique()->toArray(); 
 
                 $tokenResult = $user->createToken('Personal Access Token');
                 $token = $tokenResult->token;
@@ -39,7 +40,7 @@ class AuthController extends Controller
                     'token_type' => 'Bearer',
                     'expires_at' => Carbon::parse($token->expires_at)->toDateTimeString(),
                     'permissions' => $permissions,
-                    'routesmain' => $routesmain
+                    'sidebaritem' => $sidebaritem
                 ]);
                 // $userdata = Auth::user();
                 // $oClient = OClient::where('password_client', 1)->first();
@@ -48,33 +49,14 @@ class AuthController extends Controller
             else { 
                 return response()->json(['error'=>'Unauthorised'], 401); 
             }
-        } catch (Exception $e) {
-            return response()->json(['error' => $e->getMessage()], $e->getCode());
+        } catch (\Throwable $th) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => $th->getMessage()
+                    ], 500);
         }
     }
-    public function register(Request $request) {
-        try {
-            $validator = Validator::make($request->all(), [ 
-                'user_name' => 'required', 
-                'email' => 'required|email|unique:users',
-                'contact_no' => 'required', 
-                'password' => 'required', 
-                'c_password' => 'required|same:password', 
-            ]);
-            if ($validator->fails()) { 
-                return response()->json(['error'=>$validator->errors()], 401);            
-            }
-            $password = $request->password;
-            $input = $request->all(); 
-            $input['password'] = bcrypt($input['password']); 
-            $user = User::create($input); 
-            $oClient = OClient::where('password_client', 1)->first();
-            return $this->getTokenAndRefreshToken($oClient, $user->email, $password);
 
-        } catch (Exception $e) {
-            return response()->json(['error' => $e->getMessage()], $e->getCode());
-        } 
-    }
     public function getTokenAndRefreshToken(OClient $oClient, $email, $password) { 
         $oClient = OClient::where('password_client', 1)->first();
         $http = new Client;
@@ -91,45 +73,21 @@ class AuthController extends Controller
         $result = json_decode((string) $response->getBody(), true);
         return response()->json($result, $this->successStatus);
     }
-    // Profile API (GET)
-    public function profile(){
-        
-        try {
-            $userdata = Auth::user();
-
-            return response()->json([
-                "status" => true,
-                "message" => "Profile data",
-                "data" => $userdata
-            ]);
-            
-        } catch (Exception $e) {
-            return response()->json(['error' => $e->getMessage()], $e->getCode());
-        } 
-    }
 
     // Logout API (GET)
-    public function logout(){
-
+    public function logout(Request $request)
+    {
         try {
-            $token = auth()->user()->token();
-
-            /* --------------------------- revoke access token -------------------------- */
-            $token->revoke();
-            // $token->delete();
-    
-            /* -------------------------- revoke refresh token -------------------------- */
-            $refreshTokenRepository = app(RefreshTokenRepository::class);
-            $refreshTokenRepository->revokeRefreshTokensByAccessTokenId($token->id);
-    
-            return response()->json([
-                "status" => true,
-                "message" => "User logged out"
-            ]);
-            
-        } catch (Exception $e) {
-            return response()->json(['error' => $e->getMessage()], $e->getCode());
-        } 
+            $user = $request->user();
+            activity('user logout')->log($user->user_name.' logout from the system');
+            $user->token()->revoke();
+            return response()->json(['message' => 'Successfully logged out'], 200);
+        } catch (\Throwable $th) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => $th->getMessage()
+                    ], 500);
+        }
     }
 
     public function verifyAccount(Request $request)
@@ -158,8 +116,12 @@ class AuthController extends Controller
                 }
             }
             
-        } catch (Exception $e) {
-            return response()->json(['error' => $e->getMessage()], $e->getCode());
-        } 
+
+        } catch (\Throwable $th) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => $th->getMessage()
+                    ], 500);
+        }
     }
 }

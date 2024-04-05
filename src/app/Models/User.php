@@ -9,7 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Spatie\Activitylog\Traits\LogsActivity;
-use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\LogOptions; 
 
 class User extends Authenticatable
 {
@@ -25,6 +25,7 @@ class User extends Authenticatable
         'email',
         'name',
         'contact_no',
+        'profie_image',
         'contact_person',
         'website',
         'address',
@@ -38,7 +39,7 @@ class User extends Authenticatable
         'is_user_blocked',
         'is_trial_account',
         'user_description',
-        'is_deleted',
+        'status',
         'created_user',
         'tenant_db_name',
     ];
@@ -66,7 +67,7 @@ class User extends Authenticatable
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-        ->logOnly(['name', 'text']);
+        ->logOnly(['*']);
         // Chain fluent methods for configuration options
     }
 }

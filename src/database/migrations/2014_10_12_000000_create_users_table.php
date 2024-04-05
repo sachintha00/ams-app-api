@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('name')->nullable();
             $table->string('contact_no');
+            $table->string('profie_image')->nullable();
             $table->string('contact_person')->nullable();
             $table->string('website')->nullable();
             $table->string('address')->nullable();
@@ -31,7 +32,7 @@ return new class extends Migration
             $table->boolean('is_trial_account')->default(false);
             $table->timestamp('first_login')->nullable();
             $table->string('user_description')->nullable();
-            $table->boolean('is_deleted')->default(false);
+            $table->boolean('status')->default(false);
             $table->string('created_user')->nullable();
             $table->string('tenant_db_name')->nullable();
             $table->rememberToken();

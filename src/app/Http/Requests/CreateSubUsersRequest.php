@@ -25,14 +25,16 @@ class CreateSubUsersRequest extends FormRequest
             return [
                 'user_name' => 'required|string|max:258', 
                 'email' => 'required|email|unique:users',
-                'contact_no' => 'required', 
+                'contact_no' => 'required',
+                'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
                 'roles' => 'required'
             ];
         } else {
             return [
                 'user_name' => 'required|string|max:258', 
                 'email' => 'required|email|unique:users',
-                'contact_no' => 'required',  
+                'contact_no' => 'required',
+                'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
                 'roles' => 'required'
             ];
         }
