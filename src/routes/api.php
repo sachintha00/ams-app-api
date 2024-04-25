@@ -7,6 +7,7 @@ use App\Http\Controllers\PermisionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ActivityLogController;
+use App\Http\Controllers\OrganizationHierarchiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -51,8 +52,10 @@ Route::prefix('v1')->group(function(){
         Route::put("roles/{id}/give-permissions", [RoleController::class, "givePermissionToRole"]);
 
         Route::get("All-Activitys", [ActivityLogController::class, "index"]);
+
     });
+    Route::post("added-new-node-to-organization", [OrganizationHierarchiController::class, "insertNewNodeToOrganizationHierarchi"]); 
+    Route::get("retrieve-organization", [OrganizationHierarchiController::class, "retrieveOrganizationHierarchi"]); 
 
 
 });
-
