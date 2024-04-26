@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth; 
+use Exception;
 
 class RoleController extends Controller
 {
@@ -15,18 +16,29 @@ class RoleController extends Controller
         $this->middleware('permission:create role',['only' => ['create','store']]);
         $this->middleware('permission:update role',['only' => ['update','edite']]);
         $this->middleware('permission:delete role',['only' => ['destroy']]);
+        $this->middleware('permission:give permissions to role',['only' => ['addPermissionToRole','givePermissionToRole']]);
     }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $Role = Role::get();
+        $Role = Role::with('permissions')->get();
+        $Permission = Permission::get();
+        $user = Auth::user();
+        $thisuserpermission = $user->getAllPermissions()->pluck('name');
+
+        // save activity log
+        activity()
+            ->causedBy($user)
+            ->log($user->user_name.' View Role page');
 
         //return json response
         return response()->json([
             "status" => true,
-            'Role' => $Role
+            'Role' => $Role,
+            'Permission' => $Permission,
+            'thisuserpermission' => $thisuserpermission,
         ],200);
     }
 
@@ -45,27 +57,17 @@ class RoleController extends Controller
             ]);
 
             Role::create([
-                'name' => $request->name
+                'name' => $request->name,
+                'description' => $request->description
             ]);
 
             // Return Json Response
             return response()->json([
                 'message' => "Role successfully created."
             ],200);
-        } catch (\Exception $e) {
-            // Return Json Response
-            return response()->json([
-                'message' => "Something went really wrong!"
-            ],500);
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()], $e->getCode());
         }
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
     }
 
     /**
@@ -89,9 +91,10 @@ class RoleController extends Controller
                     'unique:roles,name'
                 ]
             ]);
-      
+            
             //echo "request : $request->image";
             $Role->name = $request->name;
+            $Role->description = $request->description;
       
             // Update Product
             $Role->save();
@@ -100,11 +103,8 @@ class RoleController extends Controller
             return response()->json([
                 'message' => "Role successfully updated."
             ],200);
-        } catch (\Exception $e) {
-            // Return Json Response
-            return response()->json([
-                'message' => "Something went really wrong!"
-            ],500);
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()], $e->getCode());
         }
     }
 
@@ -113,22 +113,26 @@ class RoleController extends Controller
      */
     public function destroy(string $id)
     {
-        //Details
-        $Role = Role::find($id);
+        try {
+            //Details
+            $Role = Role::find($id);
 
-        if(!$Role){
+            if(!$Role){
+                return response()->json([
+                'message'=>'Role Not Found.'
+                ],404);
+            }
+
+            // Delete Product
+            $Role->delete();
+
+            // Return Json Response
             return response()->json([
-              'message'=>'Role Not Found.'
-            ],404);
+                'message' => "Role successfully Deleted."
+            ],200);
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()], $e->getCode());
         }
-
-        // Delete Product
-        $Role->delete();
-
-        // Return Json Response
-        return response()->json([
-            'message' => "Role successfully Deleted."
-        ],200);
     }
 
     public function addPermissionToRole(string $id)
@@ -136,10 +140,6 @@ class RoleController extends Controller
         //Details
         $Permission = Permission::get();
         $role = Role::find($id);
-        $rolePermissions =DB::table('role_has_permissions')
-                                ->where('role_has_permissions.role_id', $role->id)
-                                ->pluck('role_has_permissions.permission_id','role_haas_permissions.permission_id')
-                                ->all();
 
         if(!$role){
             return response()->json([
@@ -151,8 +151,7 @@ class RoleController extends Controller
         return response()->json([
             "status" => true,
             'Role' => $role,
-            'Permission' => $Permission,
-            'rolePermissions' => $rolePermissions
+            'Permission' => $Permission
         ],200);
     }
 

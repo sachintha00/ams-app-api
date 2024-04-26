@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Permission\Models\Permission;
 
 class tbl_menu extends Model
 {
@@ -29,11 +30,10 @@ class tbl_menu extends Model
 
     public function children()
     {
-        return $this->hasMany(tbl_menu::class);
+        return $this->hasMany(tbl_menu::class, 'parent_id');
     }
-    
-    public function parent()
+    public function Permission()
     {
-        return $this->belongsTo(tbl_menu::class);
+        return $this->hasMany(Permission::class);
     }
 }

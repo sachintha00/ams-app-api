@@ -6,8 +6,9 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\PermisionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\OrganizationHierarchiController;
+use App\Http\Controllers\sidebarController;
+use App\Http\Controllers\ActivityLogController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,13 +32,18 @@ Route::prefix('v1')->group(function(){
     Route::post('account/verify', [AuthController::class, 'verifyAccount'])->name('user.verify'); 
 
     Route::group([
-        "middleware" => ["auth:api","is_verify_email"]
+        "middleware" => ["auth:api"]
     ], function(){
-        Route::get("profile", [AuthController::class, "profile"]);
-        Route::get("logout", [AuthController::class, "logout"]);
+        Route::post("logout", [AuthController::class, "logout"]);
 
-        Route::get("users", [UserController::class, "index"]);
+        Route::get("sidebar", [sidebarController::class, "index"]);
+
+        Route::get("users", [UserController::class, "index"]); 
         Route::post("addusers", [UserController::class, "store"]);
+        Route::put('usersupdate/{id}', [UserController::class, 'updateuserdata']);
+        Route::put('changeuserstatus/{id}', [UserController::class, 'changestatus']);
+        Route::put('userpasswordreset/{id}', [UserController::class, 'passwordreset']);
+        Route::delete('userdelete/{id}', [UserController::class, 'destroy']);
 
         Route::get("allpermissions", [PermisionController::class, "index"]);
         Route::post("addpermissions", [PermisionController::class, "store"]); 
@@ -53,9 +59,9 @@ Route::prefix('v1')->group(function(){
 
         Route::get("All-Activitys", [ActivityLogController::class, "index"]);
 
+        Route::post("added-new-node-to-organization", [OrganizationHierarchiController::class, "insertNewNodeToOrganizationHierarchi"]); 
+        Route::get("retrieve-organization", [OrganizationHierarchiController::class, "retrieveOrganizationHierarchi"]); 
     });
-    Route::post("added-new-node-to-organization", [OrganizationHierarchiController::class, "insertNewNodeToOrganizationHierarchi"]); 
-    Route::get("retrieve-organization", [OrganizationHierarchiController::class, "retrieveOrganizationHierarchi"]); 
 
 
 });
