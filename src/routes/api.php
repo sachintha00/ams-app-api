@@ -10,6 +10,7 @@ use App\Http\Controllers\OrganizationHierarchiController;
 use App\Http\Controllers\sidebarController;
 use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\LoginuserController;
+use App\Http\Controllers\WorkflowController;
 
 /*
 |--------------------------------------------------------------------------
@@ -63,7 +64,24 @@ Route::prefix('v1')->group(function(){
 
         Route::post("added-new-node-to-organization", [OrganizationHierarchiController::class, "insertNewNodeToOrganizationHierarchi"]); 
         Route::get("retrieve-organization", [OrganizationHierarchiController::class, "retrieveOrganizationHierarchi"]); 
+        
+        Route::get("users/retrieve-all", [UserController::class, "retrieveAllUserWithPaginate"]); 
+        Route::get("users/retrieve/search", [UserController::class, "retrieveAllUserFromQuerySearch"]); 
+    
+        Route::post("workflow/added-new-workflow-details", [WorkflowController::class, "addNewWorkflowDetails"]); 
+        Route::post("workflow/added-new-workflow", [WorkflowController::class, "addNewWorkflow"]); 
+        
+        Route::put("workflow/update-workflow-details", [WorkflowController::class, "updateWorkflowDetails"]); 
+        Route::put("workflow/update-workflow", [WorkflowController::class, "updateWorkflow"]); 
+        
+        Route::get("workflow/retrieve-workflow/{workflow_id}", [WorkflowController::class, "retrieveWorkflow"]); 
+        Route::get("workflow/retrieve-workflow-details/{workflow_id}", [WorkflowController::class, "retrieveWorkflowDetails"]); 
+        Route::get("workflow/retrieve-workflow-detail-nodes/{workflow_detail_id}", [WorkflowController::class, "retrieveWorkflowDetailNodes"]); 
+        
+        Route::delete("workflow/remove-workflow/{workflow_id}", [WorkflowController::class, "removeWorkflow"]); 
+        Route::delete("workflow/remove-workflow-details/{workflow_detail_id}", [WorkflowController::class, "removeWorkflowDetails"]); 
     });
+
 
 
 });

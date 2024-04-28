@@ -11,6 +11,8 @@ use Illuminate\Support\Carbon;
 use Spatie\Permission\Models\Role;
 use App\Http\Requests\CreateSubUsersRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 
 class UserController extends Controller
 {
@@ -235,6 +237,51 @@ class UserController extends Controller
                         'status' => false,
                         'message' => $th->getMessage()
                     ], 500);
+        }
+    }
+
+    public function retrieveAllUserWithPaginate(Request $request){
+        try {
+            $databaseName = DB::getDatabaseName();
+            $page = $request->get('page', 1);
+        
+            $cacheKey = $databaseName . '_users_page_' . $page;
+        
+            $users = Cache::get($cacheKey);
+            
+            if (!$users) {
+                $users = User::paginate(10);
+                Cache::put($cacheKey, $users);
+            }
+        
+            return response()->json($users);
+        } catch (QueryException $e) {
+            return response()->json(['error' => 'Database error occurred'], 500);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'An unexpected error occurred'], 500);
+        }
+    }
+
+    public function retrieveAllUserFromQuerySearch(Request $request){
+        try {
+            $databaseName = DB::getDatabaseName();
+            $searchQuery = $request->input('query');
+            $page = $request->get('page', 1);
+        
+            $cacheKey = $databaseName . '_users_page_' . $page . '_query_' . $searchQuery;
+        
+            $users = Cache::get($cacheKey);
+        
+            if (!$users) {
+                $users = User::where('name', 'ilike', "$searchQuery%")->paginate(10);
+                Cache::put($cacheKey, $users);
+            }
+        
+            return response()->json($users);
+        } catch (QueryException $e) {
+            return response()->json(['error' => 'Database error occurred'], 500);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'An unexpected error occurred'], 500);
         }
     }
 }

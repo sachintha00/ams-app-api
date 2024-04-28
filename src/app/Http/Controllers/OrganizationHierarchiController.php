@@ -26,6 +26,7 @@ class OrganizationHierarchiController extends Controller
 
         return response()->json(['message' => 'New organization node inserted successfully', 'data' => $organizationHierarchi], 201);
     }
+    
     public function updateNodeFromOrganizationHierarchi(Request $request){
 
         $organizationId = $request->query('organizationId');
