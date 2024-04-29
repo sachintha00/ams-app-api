@@ -22,9 +22,6 @@ class AuthController extends Controller
             if (Auth::attempt(['email' => request('email'), 'password' => request('password')])) {
                 $user = Auth::user();
 
-                $permissions = $user->getAllPermissions()->pluck('name');
-                $sidebaritem = $user->getAllPermissions()->pluck('routes')->flatten()->unique()->toArray(); 
-
                 $tokenResult = $user->createToken('Personal Access Token');
                 $token = $tokenResult->token;
                 
@@ -39,8 +36,6 @@ class AuthController extends Controller
                     'access_token' => $tokenResult->accessToken,
                     'token_type' => 'Bearer',
                     'expires_at' => Carbon::parse($token->expires_at)->toDateTimeString(),
-                    'permissions' => $permissions,
-                    'sidebaritem' => $sidebaritem
                 ]);
                 // $userdata = Auth::user();
                 // $oClient = OClient::where('password_client', 1)->first();
