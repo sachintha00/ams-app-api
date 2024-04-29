@@ -16,7 +16,7 @@ class RoleController extends Controller
         $this->middleware('permission:create role',['only' => ['create','store']]);
         $this->middleware('permission:update role',['only' => ['update','edite']]);
         $this->middleware('permission:delete role',['only' => ['destroy']]);
-        $this->middleware('permission:give permissions to role',['only' => ['addPermissionToRole','givePermissionToRole']]);
+        $this->middleware('permission:give permissions to role',['only' => ['addPermissionToRole','givePermissionToRole','removePermissionFromRole']]);
     }
     /**
      * Display a listing of the resource.
@@ -26,7 +26,6 @@ class RoleController extends Controller
         $Role = Role::with('permissions')->get();
         $Permission = Permission::get();
         $user = Auth::user();
-        $thisuserpermission = $user->getAllPermissions()->pluck('name');
 
         // save activity log
         activity()
@@ -38,7 +37,6 @@ class RoleController extends Controller
             "status" => true,
             'Role' => $Role,
             'Permission' => $Permission,
-            'thisuserpermission' => $thisuserpermission,
         ],200);
     }
 
@@ -176,6 +174,30 @@ class RoleController extends Controller
         // Return Json Response
         return response()->json([
             'message' => "Permissions added to role successfully."
+        ],200);
+    }
+
+    public function removePermissionFromRole(Request $request, string $id)
+    {
+        $request->validate([
+            'permission' => [
+                'required'
+            ]
+        ]);
+        //Details
+        $role = Role::find($id);
+
+        if(!$role){
+            return response()->json([
+              'message'=>'Role Not Found.'
+            ],404);
+        }
+
+        $role->revokePermissionTo($request->permission);
+
+        // Return Json Response
+        return response()->json([
+            'message' => "Permissions remove from the role successfully."
         ],200);
     }
 }
