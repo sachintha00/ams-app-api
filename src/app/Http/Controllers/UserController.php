@@ -109,11 +109,15 @@ class UserController extends Controller
 
             $user->user_name = $request->user_name;
             $user->email = $request->email;
+            $user->name = $request->name;
             $user->contact_no = $request->contact_no;
+            $user->user_description = $request->user_description;
     
             // Update user status
             $user->save();
 
+            // Remove all roles from the user
+            $user->roles()->detach();
             $user->syncRoles($request->roles);
             
             $successmessage = "Your account details is updated";
@@ -141,6 +145,10 @@ class UserController extends Controller
     {
         try {
             $user = User::findOrFail($userid);
+
+            // Remove all roles from the user
+            $user->roles()->detach();
+            
             $successmessage = "admin is delete Your account.";
             Mail::send('email.accountdelete', ['successmessage' => $successmessage], function($message) use($user){
                     $message->to($user->email);
