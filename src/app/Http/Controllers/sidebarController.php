@@ -3,10 +3,17 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth; 
+use Illuminate\Support\Facades\Auth;
+use App\Services\SidebarService;
 
 class sidebarController extends Controller
 {
+    protected $SidebarService;
+
+    public function __construct(SidebarService $SidebarService)
+    {
+        $this->SidebarService = $SidebarService;
+    }
     /**
      * Display a listing of the resource.
      */
@@ -14,48 +21,17 @@ class sidebarController extends Controller
     {
         try {
             $user = Auth::user();
-            $permissions = $user->getAllPermissions()->load('routes');
-            $sidebaritem = $user->getAllPermissions()->pluck('routes')->flatten()->unique()->toArray(); 
+            $userid = $user->id;
+            $sidebaritem = $this->SidebarService->getSidebarItem($userid);
 
-    
             return response()->json([
-                'permissions' => $permissions,
                 'sidebaritem' => $sidebaritem
             ]);
-        } catch (Exception $e) {
-            return response()->json(['error' => $e->getMessage()], $e->getCode());
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
         }
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
     }
 }
