@@ -9,6 +9,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\OrganizationHierarchiController;
 use App\Http\Controllers\sidebarController;
 use App\Http\Controllers\ActivityLogController;
+use App\Http\Controllers\LoginuserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,7 +36,7 @@ Route::prefix('v1')->group(function(){
         "middleware" => ["auth:api"]
     ], function(){
         Route::post("logout", [AuthController::class, "logout"]);
-
+        Route::get("authuserspermission", [LoginuserController::class, "index"]);
         Route::get("sidebar", [sidebarController::class, "index"]);
 
         Route::get("users", [UserController::class, "index"]); 
@@ -56,6 +57,7 @@ Route::prefix('v1')->group(function(){
         Route::delete('rolesdelete/{id}', [RoleController::class, 'destroy']);
         Route::get("roles/{id}/give-permissions", [RoleController::class, "addPermissionToRole"]);
         Route::put("roles/{id}/give-permissions", [RoleController::class, "givePermissionToRole"]);
+        Route::put("roles/{id}/remove-permissions", [RoleController::class, "removePermissionFromRole"]);
 
         Route::get("All-Activitys", [ActivityLogController::class, "index"]);
 
