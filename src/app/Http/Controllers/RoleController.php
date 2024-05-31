@@ -7,6 +7,7 @@ use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\Auth; 
 use Exception;
+use App\Models\test_wijart;
 
 class RoleController extends Controller
 {
@@ -26,6 +27,7 @@ class RoleController extends Controller
         $Role = Role::with('permissions')->get();
         $Permission = Permission::get();
         $user = Auth::user();
+        $wijart = test_wijart::all();
 
         // save activity log
         activity()
@@ -37,6 +39,7 @@ class RoleController extends Controller
             "status" => true,
             'Role' => $Role,
             'Permission' => $Permission,
+            'wijart' => $wijart
         ],200);
     }
 

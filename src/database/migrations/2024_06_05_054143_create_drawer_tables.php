@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('image_path');
             $table->unsignedBigInteger('category_id');
             $table->json('design_obj');
+            $table->text('content');
             $table->timestamps();
 
             $table->foreign('category_id')->references('id')->on('table_drawer_categories')->onDelete('cascade');
