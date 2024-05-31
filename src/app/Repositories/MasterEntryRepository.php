@@ -44,4 +44,13 @@ class MasterEntryRepository
         
         return $allprioritytypeAsArray; 
     }
+
+
+    public function getAssetTypes()
+    {
+        DB::select('CALL STORE_PROCEDURE_RETRIEVE_ASSET_TYPES()');
+        $assetTypesArray = DB::table('asset_types_from_store_procedure')->select('*')->get();
+        
+        return $assetTypesArray; 
+    }
 }

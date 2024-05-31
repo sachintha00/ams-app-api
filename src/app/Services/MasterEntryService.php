@@ -36,4 +36,9 @@ class MasterEntryService
     {
         return $this->MasterEntryRepository->getAllPriorityTypes();
     }
+
+    public function getAssetTypes()
+    {
+        return $this->MasterEntryRepository->getAssetTypes();
+    }
 }
