@@ -126,4 +126,17 @@ class WorkflowService
             return 'Failed to remove workflow details';
         }
     }
+
+    public function retrieveAllDesignation (){
+        try {
+            DB::select('CALL STORE_PROCEDURE_RETRIEVE_DESIGNATIONS()');
+            $designations = DB::table('designations_from_store_procedure')->select(['id', 'designation'])->get();
+            
+            return $designations;
+        } catch (\Exception $e) {
+            Log::error('Error while retrieving workflows: ' . $e->getMessage());
+            
+            return 'Failed to retrieve workflows'. $e->getMessage();
+        }
+    }
 }
