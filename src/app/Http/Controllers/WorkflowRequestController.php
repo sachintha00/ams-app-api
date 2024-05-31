@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Services\WorkflowRequestService;
+use App\Services\WorkflowRequestService;
 use Illuminate\Support\Facades\Auth;
 
 class WorkflowRequestController extends Controller

@@ -16,6 +16,9 @@ use App\Http\Controllers\WorkflowRequestController;
 use App\Http\Controllers\AssestRequisitionController;
 use App\Http\Controllers\testwijartController;
 use App\Http\Controllers\FileWriteController;
+use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\AssetController;
+use App\Http\Controllers\ProcurementController;
 
 /*
 |--------------------------------------------------------------------------
@@ -103,6 +106,11 @@ Route::prefix('v1')->group(function(){
         Route::get("workflow/request-process/relevant-workflows/{workflow_request_type_id}", [WorkflowRequestController::class, "retrieveRelevantWorkflows"]); 
         Route::post("workflow/request-process/get-request-workflow", [WorkflowRequestController::class, "retrieveRequestWorkflow"]); 
         Route::post("workflow/request-process/submit-data", [WorkflowRequestController::class, "submitWorkflowRequestData"]);
+        
+        Route::get("workflow/request-process/retrieve-all-request-types", [WorkflowRequestController::class, "retrieveWorkflowRequestTypes"]); 
+        Route::get("workflow/request-process/relevant-workflows/{workflow_request_type_id}", [WorkflowRequestController::class, "retrieveRelevantWorkflows"]); 
+        Route::post("workflow/request-process/get-request-workflow", [WorkflowRequestController::class, "retrieveRequestWorkflow"]); 
+        Route::post("workflow/request-process/submit-data", [WorkflowRequestController::class, "submitWorkflowRequestData"]); 
         Route::get("workflow/approvel-alert", [WorkflowRequestController::class, "retrieveWorkflowApprovelAlertData"]);
         
         Route::get("workflow/retrieve-all-designation", [WorkflowController::class, "retrieveAllDesignation"]); 
@@ -113,5 +121,17 @@ Route::prefix('v1')->group(function(){
         Route::post("workflow/request-approve", [WorkflowRequestController::class, "workflowRequestApproved"]); 
         Route::post("workflow/request-reject", [WorkflowRequestController::class, "workflowRequestRejected"]); 
         
+        
+        Route::get("asset/types", [AssetController::class, "getAssetTypes"]); 
+        
+        Route::get("supplier/get-all", [SupplierController::class, "getSuppliers"]); 
+        Route::get("supplier/search", [SupplierController::class, "retrieveSupplierFromQuerySearch"]); 
+        Route::get("supplier/reg-no", [SupplierController::class, "getSupplierRegNo"]); 
+        Route::post("supplier", [SupplierController::class, "addNewSupplier"]); 
+        
+        Route::get("procurement/get-all-staff", [ProcurementController::class, "getProcurementStaffDetails"]); 
+        Route::post("procurement/add-new-member", [ProcurementController::class, "addMemberToProcurementStaff"]); 
+        Route::put("procurement/staff-update", [ProcurementController::class, "updateMemberToProcurementStaff"]); 
+        Route::delete("procurement/staff-remove/{procurement_id}", [ProcurementController::class, "removeMemberFromProcurementStaff"]); 
     });
 });
