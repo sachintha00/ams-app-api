@@ -41,7 +41,7 @@ class SupplierController extends Controller
         }
     }
 
-    public function addNewSupplier(Request $request){
+    public function addOrUpdateSupplier(Request $request){
         try {
             $p_id = $request->input('p_id', null);
             $p_name = $request->input('p_name');
@@ -111,6 +111,26 @@ class SupplierController extends Controller
             return response()->json(['error' => 'Database error occurred'], 500);
         } catch (\Exception $e) {
             return response()->json(['error' => 'An unexpected error occurred'], 500);
+        }
+    }
+
+    public function removeSupplier(Request $request, $supplier_id)
+    {
+        try {
+            $supplierId = (int)$supplier_id;
+
+            $result = $this->SupplairService->removeSupplier(
+                $supplierId
+            );
+
+            if($result === "SUCCESS"){
+                return response()->json(['status'=>"success", 'message'=>'successfully remove supplier'], 200);
+            }else{
+                return response()->json(['error' => 'Failed to remove '], 500);
+            }
+
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to remove ' . $e->getMessage()], 500);
         }
     }
 }
