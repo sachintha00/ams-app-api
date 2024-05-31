@@ -13,10 +13,82 @@ use Illuminate\Support\Facades\Auth;
 use Laravel\Passport\Client as OClient;
 use App\Models\UserVerify;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\DB;
 
 class AuthController extends Controller
 {
     public $successStatus = 200;
+
+    // public function login(Request $request) { 
+    //     // Validate user input
+    //     $validator = Validator::make($request->all(), [
+    //         'email' => 'required|email',
+    //         'password' => 'required',
+    //     ]);
+
+    //     // If validation fails, return validation errors
+    //     if ($validator->fails()) {
+    //         return response()->json(['errors' => $validator->errors()], 422);
+    //     }
+
+    //     $credentials = $request->only('email', 'password');
+        
+
+    //     // Call your pre-login API endpoint
+    //     $response = Http::timeout(15)->post('http://213.199.44.42:8000/api/v1/tenant_user_login', [
+    //         'email' => $credentials['email'],
+    //         'password' => $credentials['password'],
+    //     ]);
+
+    //     // Check if the request was successful
+    //     if ($response->successful()) {
+    //         // Assign response data to a PHP variable
+    //         $responseData = $response->json();
+
+    //         // Access specific data from the response
+    //         $userdata = $responseData['user'];
+    //         $database = $userdata['tenant_db_name'];
+            
+    //         // Set the database connection dynamically
+    //         Config(['database.connections.pgsql.database' => $database]);
+    //         DB::reconnect('pgsql');
+    //         // dd(DB::getDatabaseName());
+
+    //         if (Auth::attempt(['email' => request('email'), 'password' => request('password')])) { 
+    //             // $oClient = OClient::where('password_client', 1)->first();
+    //             // $http = new Client;
+    //             // $response = $http->request('POST', 'http://192.168.8.184:8000/oauth/token', [
+    //             //     'headers' => [
+    //             //         'X-API-Key' => '{{token}}',
+    //             //         'Dbname' => $database,
+    //             //     ],
+    //             //     'form_params' => [
+    //             //         'grant_type' => 'password',
+    //             //         'client_id' => $oClient->id,
+    //             //         'client_secret' => $oClient->secret,
+    //             //         'username' => request('email'),
+    //             //         'password' => request('password'),
+    //             //         'scope' => '*',
+    //             //     ],
+    //             // ]);
+
+    //             // $result = json_decode((string) $response->getBody(), true);
+    //             // return response()->json($result, $this->successStatus);
+    //             $user = Auth::user();
+    //             $token = $user->createToken('MyApp')->accessToken;
+    
+    //             return response()->json(['user' => $user, 'token' => $token, 'potral' => $responseData ], 200);
+    //         } 
+    //         else { 
+    //             return response()->json(['error'=>'Unauthorised'], 401); 
+    //         } 
+    //     }else {
+    //         // Handle the case where the API request failed
+    //         return response()->json(['error'=>'Unauthorised'], 401); 
+    //         // Log error or perform error handling
+    //     }
+    // }
     public function login(UserLoginRequest $request) { 
         try {
             if (Auth::attempt(['email' => request('email'), 'password' => request('password')])) {
