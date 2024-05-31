@@ -69,4 +69,20 @@ class SupplairRepository
         $allSupplairAsArray = DB::table('supplier_add_response_from_store_procedure')->select('*')->get();
         return $allSupplairAsArray;
     }
+
+    public function removeSupplier($supplierId=0)
+    {
+        try {
+            DB::select('CALL STORE_PROCEDURE_REMOVE_SUPPLIER(?)', [$supplierId]);
+            
+            return "SUCCESS";
+    
+        } catch (\Illuminate\Database\QueryException $e) {
+            return $e->getMessage();
+            
+        } catch (\Exception $e) {
+            // Catch all other exceptions
+            return $e->getMessage();
+        }
+    }
 }

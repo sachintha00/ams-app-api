@@ -70,4 +70,11 @@ class SupplairService
         $status = $result->first()->status;
         return $status;
     }
+
+
+    public function removeSupplier($supplierId=0)
+    {
+        $status = $this->SupplairRepository->removeSupplier($supplierId);
+        return $status;
+    }
 }

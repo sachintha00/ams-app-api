@@ -105,11 +105,6 @@ Route::prefix('v1')->group(function(){
         Route::get("workflow/request-process/retrieve-all-request-types", [WorkflowRequestController::class, "retrieveWorkflowRequestTypes"]); 
         Route::get("workflow/request-process/relevant-workflows/{workflow_request_type_id}", [WorkflowRequestController::class, "retrieveRelevantWorkflows"]); 
         Route::post("workflow/request-process/get-request-workflow", [WorkflowRequestController::class, "retrieveRequestWorkflow"]); 
-        Route::post("workflow/request-process/submit-data", [WorkflowRequestController::class, "submitWorkflowRequestData"]);
-        
-        Route::get("workflow/request-process/retrieve-all-request-types", [WorkflowRequestController::class, "retrieveWorkflowRequestTypes"]); 
-        Route::get("workflow/request-process/relevant-workflows/{workflow_request_type_id}", [WorkflowRequestController::class, "retrieveRelevantWorkflows"]); 
-        Route::post("workflow/request-process/get-request-workflow", [WorkflowRequestController::class, "retrieveRequestWorkflow"]); 
         Route::post("workflow/request-process/submit-data", [WorkflowRequestController::class, "submitWorkflowRequestData"]); 
         Route::get("workflow/approvel-alert", [WorkflowRequestController::class, "retrieveWorkflowApprovelAlertData"]);
         
@@ -127,11 +122,14 @@ Route::prefix('v1')->group(function(){
         Route::get("supplier/get-all", [SupplierController::class, "getSuppliers"]); 
         Route::get("supplier/search", [SupplierController::class, "retrieveSupplierFromQuerySearch"]); 
         Route::get("supplier/reg-no", [SupplierController::class, "getSupplierRegNo"]); 
-        Route::post("supplier", [SupplierController::class, "addNewSupplier"]); 
         
         Route::get("procurement/get-all-staff", [ProcurementController::class, "getProcurementStaffDetails"]); 
         Route::post("procurement/add-new-member", [ProcurementController::class, "addMemberToProcurementStaff"]); 
         Route::put("procurement/staff-update", [ProcurementController::class, "updateMemberToProcurementStaff"]); 
         Route::delete("procurement/staff-remove/{procurement_id}", [ProcurementController::class, "removeMemberFromProcurementStaff"]); 
+
+        Route::post("supplier", [SupplierController::class, "addOrUpdateSupplier"]); 
+        Route::put("supplier/update", [SupplierController::class, "addOrUpdateSupplier"]); 
+        Route::delete("supplier/remove/{supplier_id}", [SupplierController::class, "removeSupplier"]); 
     });
 });
