@@ -29,7 +29,11 @@ class AuthController extends Controller
                     $token->expires_at = Carbon::now()->addWeeks(1);
                 }
                 $token->save();
-                activity('user login')->log($user->user_name.' login to system');
+
+                // $tokenResult = $this->getTokenAndRefreshToken(Auth::User()->email, $request->password);
+
+
+                // activity('user login')->log($user->user_name.' login to system');
     
                 return response()->json([
                     'user' => $user,
@@ -52,10 +56,10 @@ class AuthController extends Controller
         }
     }
 
-    public function getTokenAndRefreshToken(OClient $oClient, $email, $password) { 
+    public function getTokenAndRefreshToken($email, $password) { 
         $oClient = OClient::where('password_client', 1)->first();
         $http = new Client;
-        $response = $http->request('POST', 'http://192.168.8.184:8000/oauth/token', [
+        $response = $http->request('POST', 'http://192.168.43.8:8000/oauth/token', [
             'form_params' => [
                 'grant_type' => 'password',
                 'client_id' => $oClient->id,

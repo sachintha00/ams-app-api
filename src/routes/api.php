@@ -34,7 +34,7 @@ Route::prefix('v1')->group(function(){
     Route::post('account/verify', [AuthController::class, 'verifyAccount'])->name('user.verify'); 
 
     Route::group([
-        "middleware" => ["auth:api"]
+        "middleware" => ["auth:api", "dbswitch"]
     ], function(){
         Route::post("logout", [AuthController::class, "logout"]);
         Route::get("authuserspermission", [LoginuserController::class, "index"]);
