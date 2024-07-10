@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use App\Http\Services\WorkflowService;
+use App\Services\WorkflowService;
 use App\Models\DesignationModel;
 
 class WorkflowController extends Controller
