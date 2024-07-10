@@ -11,6 +11,8 @@ use App\Http\Controllers\sidebarController;
 use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\LoginuserController;
 use App\Http\Controllers\WorkflowController;
+use App\Http\Controllers\TableDrawerItemListController;
+use App\Http\Controllers\WorkflowRequestController;
 
 /*
 |--------------------------------------------------------------------------
@@ -80,8 +82,25 @@ Route::prefix('v1')->group(function(){
         
         Route::delete("workflow/remove-workflow/{workflow_id}", [WorkflowController::class, "removeWorkflow"]); 
         Route::delete("workflow/remove-workflow-details/{workflow_detail_id}", [WorkflowController::class, "removeWorkflowDetails"]); 
+
+
+        Route::post("dashboard/add-new-drawer_item", [TableDrawerItemListController::class, "storeTableDrawerItemList"]); 
+        Route::get("dashboard/get-drawer-item-list", [TableDrawerItemListController::class, "retrieveDrawerItemList"]); 
+        
+        Route::get("workflow/request-process/retrieve-all-request-types", [WorkflowRequestController::class, "retrieveWorkflowRequestTypes"]); 
+        Route::get("workflow/request-process/relevant-workflows/{workflow_request_type_id}", [WorkflowRequestController::class, "retrieveRelevantWorkflows"]); 
+        Route::post("workflow/request-process/get-request-workflow", [WorkflowRequestController::class, "retrieveRequestWorkflow"]); 
+        Route::post("workflow/request-process/submit-data", [WorkflowRequestController::class, "submitWorkflowRequestData"]); 
+        Route::get("workflow/approvel-alert", [WorkflowRequestController::class, "retrieveWorkflowApprovelAlertData"]); 
+        
+        
+        Route::get("workflow/retrieve-all-designation", [WorkflowController::class, "retrieveAllDesignation"]); 
+        Route::get("workflow/retrieve-all-designation-from-search", [WorkflowController::class, "retrieveAllDesignationsFromQuerySearch"]); 
+        Route::post("workflow/retrieve-first-aprover", [WorkflowRequestController::class, "retrieveWorkflowFirstAprover"]); 
+
+
+        Route::post("workflow/request-approve", [WorkflowRequestController::class, "workflowRequestApproved"]); 
+        Route::post("workflow/request-reject", [WorkflowRequestController::class, "workflowRequestRejected"]); 
+        
     });
-
-
-
 });

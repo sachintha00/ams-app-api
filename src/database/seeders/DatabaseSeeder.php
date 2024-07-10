@@ -15,5 +15,6 @@ class DatabaseSeeder extends Seeder
         $this->call(RequestTypesSeeder::class);
         $this->call(WorkflowBehaviorTypesSeeder::class);
         $this->call(WorkflowTypesSeeder::class);
+        $this->call(DesignationSeeder::class);
     }
 }

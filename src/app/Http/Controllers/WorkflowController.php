@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use App\Http\Services\WorkflowService;
+use App\Models\DesignationModel;
 
 class WorkflowController extends Controller
 {
@@ -156,6 +158,32 @@ class WorkflowController extends Controller
             return response()->json(['message' => $message], 200);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to remove workflow'], 500);
+        }
+    }
+
+    public function retrieveAllDesignation(Request $request)
+    {
+        try {
+            $designations = $this->workflowService->retrieveAllDesignation();
+        
+            return response()->json(['data' => $designations], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to retrieve workflows'. $e->getMessage()], 500);
+        }
+    }
+
+    public function retrieveAllDesignationsFromQuerySearch(Request $request)
+    {
+        try {
+            $searchQuery = $request->input('query');
+            $page = $request->get('page', 1);
+            $designations = DesignationModel::where('designation', 'ilike', "$searchQuery%")->paginate(10);
+        
+            return response()->json($designations);
+        } catch (QueryException $e) {
+            return response()->json(['error' => 'Database error occurred'], 500);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'An unexpected error occurred'], 500);
         }
     }
 }
