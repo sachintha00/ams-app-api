@@ -10,7 +10,7 @@ class TableDrawerItemLists extends Model
     use HasFactory;
 
     protected $fillable = [
-        'image_path', 'category_id', 'design_obj',
+        'image_path', 'category_id', 'design_obj', 'content',
     ];
 
     protected $casts = [

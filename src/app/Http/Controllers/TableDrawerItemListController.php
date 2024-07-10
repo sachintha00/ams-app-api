@@ -31,6 +31,7 @@ class TableDrawerItemListController extends Controller
                     'id' => $item->id,
                     'image_path' => $item->image_path,
                     'design_obj' => $item->design_obj,
+                    'content' => $item->content,
                 ];
             })->all();
 
