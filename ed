@@ -1,0 +1,1 @@
+const HelloWorld = () => { return React.createElement('div', null, React.createElement('h1', null, 'Hello, World!'), React.createElement('p', null, 'This is a simple Next.js component.')); }; return HelloWorld;
