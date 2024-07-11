@@ -23,6 +23,7 @@ class SupplierController extends Controller
 
             foreach($results as $result){
                 $result->contact_no = json_decode($result->contact_no);
+                $result->supplier_asset_classes = json_decode($result->supplier_asset_classes);
             }
 
             return response()->json(['status'=>"success", 'data' => $results], 200);
@@ -104,7 +105,9 @@ class SupplierController extends Controller
     {
         try {
             $searchQuery = $request->input('query');
-            $suppliers = SupplierModel::where('name', 'ilike', "$searchQuery%")->paginate(10);
+            $suppliers = SupplierModel::where('supplier_reg_status', 'APPROVED')
+                        ->where('name', 'ilike', "$searchQuery%")
+                        ->paginate(10);
         
             return response()->json($suppliers);
         } catch (QueryException $e) {

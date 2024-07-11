@@ -14,6 +14,7 @@ use App\Http\Requests\CreateSubUsersRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -60,7 +61,17 @@ class UserController extends Controller
             $input = $request->all();
             $password = Str::random(8); 
             $input['password'] = bcrypt($password);
+            $input['status'] = true;
             // $input['profie_image'] = $imageName;
+            
+            if ($request->hasFile('profile_image')) {
+                $file = $request->file('profile_image');
+                $name = time() . '_' .$input['name']. $file->getClientOriginalName();
+                $file->move(public_path('uploads/profile_image'), $name);
+                $profileImage = 'uploads/profile_image/' . $name;
+                $input['profie_image'] = $profileImage;
+            }
+
             $user = User::create($input);
 
             // Save Image in Storage folder
@@ -68,18 +79,18 @@ class UserController extends Controller
             
             $user->syncRoles($request->roles);
             
-            $headertoken = Str::random(10);
-            $verifytoken = Str::random(6);
-            $expiration = Carbon::now()->addDay(1);
+            // $headertoken = Str::random(10);
+            // $verifytoken = Str::random(6);
+            // $expiration = Carbon::now()->addDay(1);
     
-            UserVerify::create([
-                'user_id' => $user->id,
-                'headertoken' => $headertoken,
-                'token' => $verifytoken,
-                'expiry_date' => $expiration
-                ]);
+            // UserVerify::create([
+            //     'user_id' => $user->id,
+            //     'headertoken' => $headertoken,
+            //     'token' => $verifytoken,
+            //     'expiry_date' => $expiration
+            //     ]);
     
-            Mail::send('email.subuseremailVerificationEmail', ['token' => $verifytoken, 'password' => $password], function($message) use($request){
+            Mail::send('email.subuseremailVerificationEmail', ['password' => $password], function($message) use($request){
                 $message->to($request->email);
                 $message->subject('Email Verification Mail');
             });

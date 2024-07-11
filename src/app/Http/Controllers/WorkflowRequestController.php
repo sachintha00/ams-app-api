@@ -21,7 +21,7 @@ class WorkflowRequestController extends Controller
             $userId = Auth::id();
             $workflowRequestTypeId = $request->input('workflow_request_type_id');
             $workflowId = $request->input('workflow_id');
-            $assetRequisitionId = $request->input('asset_requisition_id');
+            $requisitionId = $request->input('requisition_id');
             $budgetValue = $request->input('budget_value');
             $designationUserId = $request->input('designation_user_id');
             
@@ -29,7 +29,7 @@ class WorkflowRequestController extends Controller
                 $userId,
                 $workflowRequestTypeId,
                 $workflowId ,
-                $assetRequisitionId ,
+                $requisitionId ,
                 $requisitionDataObject
             );
 
@@ -107,6 +107,7 @@ class WorkflowRequestController extends Controller
             foreach ($results as $result) {
                 $result->requested_user = json_decode($result->requested_user);
                 $result->requested_data_obj = json_decode($result->requested_data_obj);
+                
                 if ($result->next_approver_details) {
                     $result->next_approver_details = json_decode($result->next_approver_details);
                 }
@@ -153,12 +154,15 @@ class WorkflowRequestController extends Controller
     {
         try {
             $userId = Auth::id();
+            // dd($userId);
             $requestId = $request->input('request_id');
             $workflowNodeId = $request->input('workflow_node_id');
             $requisitionId = $request->input('requisition_id');
             $approverComment = $request->input('approver_comment');
             $designationUserId = $request->input('designation_user_id');
             $workflowId = $request->input('workflow_id');
+            $requestTypeId = $request->input('request_type_id', null);
+            $status = $request->input('status', null);
             
             $approveResult = $this->workflowRequestService->workflowRequestApproved(
                 $userId,
@@ -167,7 +171,9 @@ class WorkflowRequestController extends Controller
                 $workflowNodeId,
                 $requisitionId,
                 $approverComment,
-                $designationUserId
+                $designationUserId,
+                $requestTypeId,
+                $status
             );
 
             if ($approveResult['status'] === 'SUCCESS') {
@@ -191,6 +197,8 @@ class WorkflowRequestController extends Controller
             $approverComment = $request->input('approver_comment');
             $designationUserId = $request->input('designaion_user_id');
             $workflowId = $request->input('workflow_id');
+            $requestTypeId = $request->input('request_type_id', null);
+            $status = $request->input('status', null);
             
             $approveResult = $this->workflowRequestService->workflowRequestRejected(
                 $userId,
@@ -199,7 +207,9 @@ class WorkflowRequestController extends Controller
                 $workflowNodeId ,
                 $requisitionId ,
                 $approverComment,
-                $designationUserId
+                $designationUserId,
+                $requestTypeId,
+                $status
             );
             
             if ($approveResult['status'] === 'SUCCESS') {
