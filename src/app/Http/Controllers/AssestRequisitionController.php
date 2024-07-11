@@ -28,6 +28,7 @@ class AssestRequisitionController extends Controller
 
     public function index()
     {
+        // dd("test");
         try {
             $user = Auth::user();
             $userid = $user->id;
@@ -43,6 +44,7 @@ class AssestRequisitionController extends Controller
             $allavailabilitytype = $this->MasterEntryService->getAllAvailabilityTypes();
             $allprioritytype = $this->MasterEntryService->getAllPriorityTypes();
             $allsupplair = $this->SupplairService->getAllSupplair();
+
 
             return response()->json([
                 "status" => true,
@@ -128,5 +130,16 @@ class AssestRequisitionController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function getAllApprovedAssetRequisition(Request $request){
+        try {
+            $userId = Auth::id();
+            $approvedAssetRequisitions = $this->AssetRequisitionService->getAllApprovedAssetRequisition($userId); 
+
+            return response()->json(['message' => 'Successfully retrieve approved asset requisitions', "requisition_data"=>$approvedAssetRequisitions["requisition_data"]], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to retrieve approved asset requisition', 'message' => $e->getMessage()], 500);
+        }
     }
 }

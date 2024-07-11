@@ -8,10 +8,9 @@ return new class extends Migration
     public function up(): void
     {
         $procedure = <<<SQL
-                CREATE OR REPLACE PROCEDURE STORE_PROCEDURE_WORKFLOW_ALERT_DATA_RELEVANT_APPROVER(
-                    p_user_id BIGINT
-                )
-                LANGUAGE plpgsql
+                CREATE OR REPLACE PROCEDURE public.store_procedure_workflow_alert_data_relevant_approver(
+                    IN p_user_id bigint)
+                LANGUAGE 'plpgsql'
                 AS $$
                 DECLARE
                     condition JSON;
@@ -25,6 +24,7 @@ return new class extends Migration
                     workflow_record RECORD;
                     workflow_data_obj JSONB;
                     workflow_request_type TEXT;
+                    workflow_request_type_id INT;
                     pending_workflow_nodeid BIGINT;
 
                     requested_workflow_id BIGINT;
@@ -108,6 +108,7 @@ return new class extends Migration
                         previous_user_details JSONB,
                         requested_user JSONB,
                         workflow_request_type TEXT,
+                        workflow_request_type_id INT,
                         workflow_id BIGINT,
                         requested_id BIGINT,
                         pending_workflow_node_id BIGINT,
@@ -133,8 +134,8 @@ return new class extends Migration
                                 FOR user_data IN SELECT * FROM jsonb_array_elements((workflow_data_obj->>'users')::jsonb)
                                 LOOP
                                     IF (user_data->>'id')::BIGINT = p_user_id THEN
-                                        SELECT wrq.id, wrq.user_id, wrq.value, wrq.workflow_id, wrq.requisition_data_object, wrt.request_type
-                                            INTO asset_request_id, requested_user_id, request_value, requested_workflow_id, request_data_obj, workflow_request_type
+                                        SELECT wrq.id, wrq.user_id, wrq.value, wrq.workflow_id, wrq.requisition_data_object, wrt.request_type, wrt.id
+                                            INTO asset_request_id, requested_user_id, request_value, requested_workflow_id, request_data_obj, workflow_request_type, workflow_request_type_id
                                         FROM public.workflow_request_queues wrq
                                         JOIN public.workflow_request_types wrt
                                         ON wrq.workflow_request_type = wrt.id
@@ -146,7 +147,6 @@ return new class extends Migration
                                         FROM public.workflow_request_queue_details
                                         WHERE request_id = asset_request_id
                                         AND request_status_from_level = 'PENDING';
-
 
                                         SELECT jsonb_agg(
                                                 jsonb_build_object(
@@ -251,7 +251,6 @@ return new class extends Migration
                                 
                                             EXECUTE 'SELECT (' || combined_condition_sql || ')::BOOLEAN' INTO combined_condition_result;
 
-
                                             FOR workflow_record IN
                                                 SELECT id, workflow_detail_parent_id, workflow_id, workflow_detail_type_id, 
                                                     workflow_detail_behavior_type_id, workflow_detail_order, 
@@ -340,7 +339,6 @@ return new class extends Migration
                                                     next_approver_behaviour_type := data_object->>'behaviourType'::TEXT;
                                                     next_approver_type := (data_object->>'type')::TEXT;
                                                     designation_json := (data_object->>'designation')::JSONB;
-
 
                                                     SELECT ARRAY(SELECT (jsonb_array_elements(designation_json)->>'id')::INT)
                                                     INTO designation_ids;
@@ -461,6 +459,7 @@ return new class extends Migration
                                         INSERT INTO workflow_alert_data_from_store_procedure (
                                             requested_user,
                                             workflow_request_type,
+                                            workflow_request_type_id,
                                             workflow_id,
                                             requested_id,
                                             pending_workflow_node_id,
@@ -473,6 +472,7 @@ return new class extends Migration
                                         ) VALUES (
                                             requested_user_data::JSONB,
                                             workflow_request_type::TEXT,
+                                            workflow_request_type_id::INT,
                                             requested_workflow_id::BIGINT,
                                             asset_request_id::BIGINT,
                                             pending_workflow_nodeid::BIGINT,
@@ -496,8 +496,8 @@ return new class extends Migration
                                             WHERE designation_id = (designation_data->>'id')::BIGINT AND id = p_user_id
                                         LOOP
                                             IF approvers_user_id = p_user_id THEN
-                                                SELECT wrq.id, wrq.user_id, wrq.value, wrq.workflow_id, wrq.requisition_data_object, wrt.request_type
-                                                    INTO asset_request_id, requested_user_id, request_value, requested_workflow_id, request_data_obj, workflow_request_type
+                                                SELECT wrq.id, wrq.user_id, wrq.value, wrq.workflow_id, wrq.requisition_data_object, wrt.request_type, wrt.id
+                                                    INTO asset_request_id, requested_user_id, request_value, requested_workflow_id, request_data_obj, workflow_request_type, workflow_request_type_id
                                                 FROM public.workflow_request_queues wrq
                                                 JOIN public.workflow_request_types wrt
                                                 ON wrq.workflow_request_type = wrt.id
@@ -797,6 +797,7 @@ return new class extends Migration
                                                 INSERT INTO workflow_alert_data_from_store_procedure (
                                                     requested_user,
                                                     workflow_request_type,
+                                                    workflow_request_type_id,
                                                     workflow_id,
                                                     requested_id,
                                                     pending_workflow_node_id,
@@ -809,6 +810,7 @@ return new class extends Migration
                                                 ) VALUES (
                                                     requested_user_data::JSONB,
                                                     workflow_request_type::TEXT,
+                                                    workflow_request_type_id::INT,
                                                     requested_workflow_id::BIGINT,
                                                     asset_request_id::BIGINT,
                                                     pending_workflow_nodeid::BIGINT,
@@ -847,8 +849,8 @@ return new class extends Migration
                                     RAISE INFO 'User designation ID: %', user_designation_id;
 
                                     IF user_designation_id = ANY(designation_id_from_data_obj) THEN
-                                        SELECT wrq.id, wrq.user_id, wrq.value, wrq.workflow_id, wrq.requisition_data_object, wrt.request_type
-                                            INTO asset_request_id, requested_user_id, request_value, requested_workflow_id, request_data_obj, workflow_request_type
+                                        SELECT wrq.id, wrq.user_id, wrq.value, wrq.workflow_id, wrq.requisition_data_object, wrt.request_type, wrt.id
+                                            INTO asset_request_id, requested_user_id, request_value, requested_workflow_id, request_data_obj, workflow_request_type, workflow_request_type_id
                                         FROM public.workflow_request_queues wrq
                                         JOIN public.workflow_request_types wrt
                                         ON wrq.workflow_request_type = wrt.id
@@ -938,7 +940,6 @@ return new class extends Migration
                                             END LOOP;
                                 
                                             EXECUTE 'SELECT (' || combined_condition_sql || ')::BOOLEAN' INTO combined_condition_result;
-
 
                                             FOR workflow_record IN
                                                 SELECT id, workflow_detail_parent_id, workflow_id, workflow_detail_type_id, 
@@ -1202,6 +1203,7 @@ return new class extends Migration
                                         INSERT INTO workflow_alert_data_from_store_procedure (
                                             requested_user,
                                             workflow_request_type,
+                                            workflow_request_type_id,
                                             workflow_id,
                                             requested_id,
                                             pending_workflow_node_id,
@@ -1214,6 +1216,7 @@ return new class extends Migration
                                         ) VALUES (
                                             requested_user_data::JSONB,
                                             workflow_request_type::TEXT,
+                                            workflow_request_type_id::INT,
                                             requested_workflow_id::BIGINT,
                                             asset_request_id::BIGINT,
                                             pending_workflow_nodeid::BIGINT,

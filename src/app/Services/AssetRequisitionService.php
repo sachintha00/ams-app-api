@@ -32,4 +32,8 @@ class AssetRequisitionService
     {
         return $this->AssetRequisitionRepository->getUserAssetRequisition($id);
     }
+    public function getAllApprovedAssetRequisition($userId)
+    {
+        return $this->AssetRequisitionRepository->getAllApprovedAssetRequisition($userId);
+    }
 }

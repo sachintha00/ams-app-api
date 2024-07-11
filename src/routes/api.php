@@ -19,6 +19,9 @@ use App\Http\Controllers\FileWriteController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\AssetController;
 use App\Http\Controllers\ProcurementController;
+use App\Http\Controllers\PrefixController;
+
+use Illuminate\Support\Facades\Log;
 
 /*
 |--------------------------------------------------------------------------
@@ -58,6 +61,7 @@ Route::prefix('v1')->group(function(){
         Route::get("all-assest-requisition", [AssestRequisitionController::class, "index"]);
         Route::post("add-assest-requisition", [AssestRequisitionController::class, "store"]);
         Route::put("update-assest-requisition-status", [AssestRequisitionController::class, "statusupdate"]);
+        Route::get("asset-requisition/all-approved", [AssestRequisitionController::class, "getAllApprovedAssetRequisition"]); 
 
         Route::get("users", [UserController::class, "index"]); 
         Route::post("addusers", [UserController::class, "store"]);
@@ -127,9 +131,28 @@ Route::prefix('v1')->group(function(){
         Route::post("procurement/add-new-member", [ProcurementController::class, "addMemberToProcurementStaff"]); 
         Route::put("procurement/staff-update", [ProcurementController::class, "updateMemberToProcurementStaff"]); 
         Route::delete("procurement/staff-remove/{procurement_id}", [ProcurementController::class, "removeMemberFromProcurementStaff"]); 
+        Route::post("procurement/send-quation", [ProcurementController::class, "createProcurement"]); 
+        Route::put("procurement/submit-procurement", [ProcurementController::class, "updateProcurement"]); 
+        Route::get("procurement/ids", [ProcurementController::class, "getProcurementIds"]); 
+        Route::get("procurement/{procurement_id}", [ProcurementController::class, "getProcurements"]); 
+        Route::get("procurement/by-user/{procurement_id}", [ProcurementController::class, "getProcurementsByUser"]); 
+        Route::post("procurement/quotation-feedback", [ProcurementController::class, "createQuotationFeedback"]); 
+        Route::put("procurement/quotation-feedback/update", [ProcurementController::class, "updateQuotationFeedback"]); 
+        Route::put("procurement/quotation-feedback/quotation_complete/{procurement_id}", [ProcurementController::class, "quotationComplete"]); 
+        Route::delete("procurement/quotation-feedback/{quotation_feedback_id}", [ProcurementController::class, "removeQuotationFeedback"]); 
+        Route::get("procurement/get-all-quotation-feedback/{quotation_id}", [ProcurementController::class, "getQuotationFeedbacks"]); 
+        
+        Route::get("get-prefixes-data/{process_id}", [PrefixController::class, "getAllPrefixes"]); 
 
         Route::post("supplier", [SupplierController::class, "addOrUpdateSupplier"]); 
         Route::put("supplier/update", [SupplierController::class, "addOrUpdateSupplier"]); 
         Route::delete("supplier/remove/{supplier_id}", [SupplierController::class, "removeSupplier"]); 
+
+        
     });
+    Route::get("test", function (Request $request){
+        // dd($request->header('name'));
+        error_log($request->header('email'));
+        return response()->json(['status' => 'success', 'message' => $request->header('email')]);
+    }); 
 });

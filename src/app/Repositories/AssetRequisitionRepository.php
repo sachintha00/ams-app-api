@@ -59,4 +59,31 @@ class AssetRequisitionRepository
         
         return $allUserAssetRequisition;
     }
+
+    public function getAllApprovedAssetRequisition($userId)
+    {
+        try {
+            DB::select('CALL STORE_PROCEDURE_GET_APPROVED_ASSET_REQUISITION(?)',[$userId]);
+            
+            $allApprovedAssetRequisitions = DB::table('approved_asset_requisitions_from_store_procedure')->select('*')->get();
+            
+            $formattedData = [];
+        
+            foreach ($allApprovedAssetRequisitions as $requisition) {
+                $formattedItems = json_decode($requisition->requisition_data, true); 
+                
+                $formattedData[] = [
+                    'requisition_data' => $formattedItems,
+                ];
+            }
+
+            return $formattedData[0];
+        } catch (\Exception $e) {
+            return [
+                'success' => false,
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+
 }
