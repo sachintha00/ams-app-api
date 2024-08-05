@@ -41,4 +41,9 @@ class MasterEntryService
     {
         return $this->MasterEntryRepository->getAssetTypes();
     }
+
+    public function getAllAssetCategories()
+    {
+        return $this->MasterEntryRepository->getAllAssetCategories();
+    }
 }

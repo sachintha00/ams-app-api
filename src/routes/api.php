@@ -20,6 +20,8 @@ use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\AssetController;
 use App\Http\Controllers\ProcurementController;
 use App\Http\Controllers\PrefixController;
+use App\Http\Controllers\ImageController;
+use App\Http\Controllers\AssetsManagementController;
 
 use Illuminate\Support\Facades\Log;
 
@@ -148,7 +150,9 @@ Route::prefix('v1')->group(function(){
         Route::put("supplier/update", [SupplierController::class, "addOrUpdateSupplier"]); 
         Route::delete("supplier/remove/{supplier_id}", [SupplierController::class, "removeSupplier"]); 
 
-        
+        Route::get('/profile-image/{filename}', [ImageController::class, 'show']);
+
+        Route::get("all-assests", [AssetsManagementController::class, "index"]);
     });
     Route::get("test", function (Request $request){
         // dd($request->header('name'));

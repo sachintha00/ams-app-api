@@ -53,4 +53,12 @@ class MasterEntryRepository
         
         return $assetTypesArray; 
     }
+
+    public function getAllAssetCategories()
+    {
+        DB::select('CALL STORE_PROCEDURE_RETRIEVE_ASSEST_CATEGORIES()');
+        $assetCategories = DB::table('asset_categories_from_store_procedure')->select('*')->get();
+        
+        return $assetCategories; 
+    }
 }

@@ -21,19 +21,30 @@ class CustomAuthenticate extends Middleware
      */
     public function handle($request, Closure $next, ...$guards)
     {
+        // Retrieve the email from the request header
         $fileName = $request->header('Email');
-        $filePath = 'public/tenant/' . $fileName . '.txt';
-        $dbname = Storage::get($filePath);
 
-        // Set the database connection dynamically
-        Config(['database.connections.pgsql.database' => $dbname]);
+        if ($fileName) {
+            // Build the file path and retrieve the database name
+            $filePath = 'public/tenant/' . $fileName . '.txt';
 
-        // Reconnect to the tenant's database
-        DB::reconnect('pgsql');
-        
-        // First, call the parent handle method to perform the default authentication check
-        parent::handle($request, $next, ...$guards);
+            if (Storage::exists($filePath)) {
+                $dbname = Storage::get($filePath);
 
-        return $next($request);
+                // Set the database connection dynamically
+                Config::set('database.connections.pgsql.database', $dbname);
+
+                // Reconnect to the tenant's database
+                DB::purge('pgsql');
+                DB::reconnect('pgsql');
+            } else {
+                abort(404, 'Tenant database configuration not found.');
+            }
+        } else {
+            abort(400, 'Email header is missing.');
+        }
+
+        // Perform the default authentication check using the parent method
+        return parent::handle($request, $next, ...$guards);
     }
 }
