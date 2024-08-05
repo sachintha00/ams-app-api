@@ -21,15 +21,15 @@ class CustomAuthenticate extends Middleware
      */
     public function handle($request, Closure $next, ...$guards)
     {
-        // $fileName = $request->header('Email');
-        // $filePath = 'public/tenant/' . $fileName . '.txt';
-        // $dbname = Storage::get($filePath);
+        $fileName = $request->header('Email');
+        $filePath = 'public/tenant/' . $fileName . '.txt';
+        $dbname = Storage::get($filePath);
 
-        // // Set the database connection dynamically
-        // Config(['database.connections.pgsql.database' => $dbname]);
+        // Set the database connection dynamically
+        Config(['database.connections.pgsql.database' => $dbname]);
 
-        // // Reconnect to the tenant's database
-        // DB::reconnect('pgsql');
+        // Reconnect to the tenant's database
+        DB::reconnect('pgsql');
         
         // First, call the parent handle method to perform the default authentication check
         parent::handle($request, $next, ...$guards);

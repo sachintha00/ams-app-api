@@ -17,8 +17,7 @@
     </head>
     <body class="antialiased">
     <h1>Email Verification Mail</h1>
-  
-    <p>Please verify your email with bellow link: {{ $token }}</p>
+
     <p>User password: {{ $password }}</p>
     </body>
 </html>

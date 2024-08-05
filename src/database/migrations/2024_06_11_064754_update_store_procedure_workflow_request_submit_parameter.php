@@ -75,10 +75,6 @@ return new class extends Migration
                     )RETURNING id INTO request_id;
 
                     RAISE INFO 'Test %',request_id;
-
-                    UPDATE public.asset_requisitions
-                    SET requisition_status = 'PENDING'
-                    WHERE requisition_id = p_asset_requisition_id;
                     
                     INSERT INTO response (status, message, request_id)
                     VALUES ('SUCCESS', 'Data inserted successfully', request_id);

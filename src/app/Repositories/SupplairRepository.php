@@ -7,7 +7,7 @@ class SupplairRepository
 {
     public function getAllSupplair()
     {
-        DB::select('CALL STORE_PROCEDURE_RETRIEVE_SUPPLAIR()');
+        DB::select('CALL STORE_PROCEDURE_RETRIEVE_SUPPLIER()');
         $allSupplairAsArray = DB::table('suppliers_from_store_procedure')->select('*')->get();
         
         return $allSupplairAsArray;
