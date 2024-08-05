@@ -127,7 +127,7 @@ class WorkflowService
         }
     }
 
-    public function retrieveAllDesignation (){
+    public function retrieveAllDesignation (){ 
         try {
             DB::select('CALL STORE_PROCEDURE_RETRIEVE_DESIGNATIONS()');
             $designations = DB::table('designations_from_store_procedure')->select(['id', 'designation'])->get();

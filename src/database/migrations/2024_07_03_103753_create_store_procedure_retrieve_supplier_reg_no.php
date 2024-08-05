@@ -20,7 +20,7 @@ return new class extends Migration
                 );
 
                 curr_val := last_value FROM supplier_id_seq;
-                next_supplier_id := 'SUPPLIER-' || LPAD((curr_val + 1)::TEXT, 4, '0');
+                next_supplier_id := 'SUPPLIER-' || LPAD((curr_val)::TEXT, 4, '0');
 
                 INSERT INTO supplier_reg_no_from_store_procedure
                     (supplier_reg_no) VALUES (next_supplier_id);
