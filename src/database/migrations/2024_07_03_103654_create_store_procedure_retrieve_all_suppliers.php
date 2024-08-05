@@ -19,7 +19,8 @@ return new class extends Migration
                 SELECT * FROM
                     supplair 
                 WHERE
-                    supplair.id = p_supplier_id OR p_supplier_id IS NULL OR p_supplier_id = 0
+                    (supplair.id = p_supplier_id OR p_supplier_id IS NULL OR p_supplier_id = 0)
+	            AND supplair.supplier_reg_status = 'APPROVED'
                 ORDER BY supplair.id;
             END;
             $$ LANGUAGE plpgsql;"

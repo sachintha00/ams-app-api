@@ -89,6 +89,7 @@ class AuthController extends Controller
     //         // Log error or perform error handling
     //     }
     // }
+    
     public function login(UserLoginRequest $request) { 
         try {
             if (Auth::attempt(['email' => request('email'), 'password' => request('password')])) {

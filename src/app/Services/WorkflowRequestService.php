@@ -7,15 +7,35 @@ use Illuminate\Support\Facades\Log;
 
 class WorkflowRequestService
 {
-    public function submitWorkflowRequestData($userId, $workflowRequestTypeId, $workflowId, $assetRequisitionId, $requisitionDataObject)
+    public function submitWorkflowRequestData($userId, $workflowRequestTypeId, $workflowId, $requisitionId, $requisitionDataObject)
     {
         try {
+            if($workflowRequestTypeId === 1){
+                DB::statement('CALL STORE_PROCEDURE_UPDATE_DATA(?, ?, ?)', [
+                    '{"asset_requisitions": {"requisition_status": "PENDING"}}',
+                    $requisitionId,
+                    'requisition_id'
+                ]);
+            } else if($workflowRequestTypeId === 2){
+                DB::statement('CALL STORE_PROCEDURE_UPDATE_DATA(?, ?, ?)', [
+                    '{"supplair": {"supplier_reg_status": "PENDING"}}',
+                    $requisitionId,
+                    'supplier_reg_no'
+                ]);
+            }else if($workflowRequestTypeId === 3){
+                DB::statement('CALL STORE_PROCEDURE_UPDATE_DATA(?, ?, ?)', [
+                    '{"procurements": {"procurement_status": "PENDING"}}',
+                    $requisitionId,
+                    'request_id'
+                ]);
+            }
+            
             DB::statement("CALL STORE_PROCEDURE_WORKFLOW_REQUEST_SUBMIT(?, ?, ?, ?, ?)", [
                 $userId,
                 $workflowRequestTypeId,
                 $workflowId,
-                $assetRequisitionId ,
-                $requisitionDataObject
+                $requisitionId ,
+                $requisitionDataObject,
             ]);
 
             $result = DB::table('response')->select(['status', 'message', 'request_id'])->get();
@@ -159,9 +179,26 @@ class WorkflowRequestService
         $workflowNodeId,
         $requisitionId,
         $approverComment,
-        $designationUserId
+        $designationUserId,
+        $requestTypeId,
+        $status
     ){
         try {
+            // dd($requestId);
+            
+            if($requestTypeId === 1 && $status === "APPROVED"){
+                DB::statement('CALL STORE_PROCEDURE_UPDATE_DATA(?, ?, ?)', [
+                    '{"asset_requisitions": {"requisition_status": "APPROVED"}}',
+                    $requisitionId,
+                    'requisition_id'
+                ]);
+            } else if($requestTypeId === 2 && $status === "APPROVED"){
+                DB::statement('CALL STORE_PROCEDURE_UPDATE_DATA(?, ?, ?)', [
+                    '{"supplair": {"supplier_reg_status": "APPROVED"}}',
+                    $requisitionId,
+                    'supplier_reg_no'
+                ]);
+            }
             DB::statement("CALL STORE_PROCEDURE_WORKFLOW_REQUEST_APPROVED(?, ?, ?, ?)", [
                 $userId,
                 $requestId,
@@ -201,10 +238,26 @@ class WorkflowRequestService
         $workflowNodeId,
         $requisitionId,
         $approverComment,
-        $designationUserId
+        $designationUserId,
+        $requestTypeId,
+        $status
     ){
 
         try {
+
+            if($requestTypeId === 1 && $status === "REJECT"){
+                DB::statement('CALL STORE_PROCEDURE_UPDATE_DATA(?, ?, ?)', [
+                    '{"asset_requisitions": {"requisition_status": "REJECT"}}',
+                    $requisitionId,
+                    'requisition_id'
+                ]);
+            } else if($requestTypeId === 2 && $status === "REJECT"){
+                DB::statement('CALL STORE_PROCEDURE_UPDATE_DATA(?, ?, ?)', [
+                    '{"supplair": {"supplier_reg_status": "REJECT"}}',
+                    $requisitionId,
+                    'supplier_reg_no'
+                ]);
+            }
              
             DB::statement("CALL STORE_PROCEDURE_WORKFLOW_REQUEST_REJECTED(?, ?, ?, ?, ?)", [
                 $userId,
