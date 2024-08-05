@@ -13,7 +13,7 @@ class RoleController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('permission:view role',['only' => ['index']]);
+        $this->middleware('permission:Role',['only' => ['index']]);
         $this->middleware('permission:create role',['only' => ['create','store']]);
         $this->middleware('permission:update role',['only' => ['update','edite']]);
         $this->middleware('permission:delete role',['only' => ['destroy']]);
@@ -46,7 +46,7 @@ class RoleController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request) 
     {
         try {
             $request->validate([

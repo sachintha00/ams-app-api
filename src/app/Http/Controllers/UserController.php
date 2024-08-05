@@ -15,17 +15,23 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
+use App\Services\MasterEntryService;
+use Illuminate\Support\Facades\Http;
 
 class UserController extends Controller
 {
-    public function __construct()
+
+    protected $MasterEntryService;
+
+    public function __construct(MasterEntryService $MasterEntryService)
     {
-        $this->middleware('permission:view user',['only' => ['index']]);
+        $this->middleware('permission:Users',['only' => ['index']]);
         $this->middleware('permission:create user',['only' => ['store']]);
         $this->middleware('permission:update user',['only' => ['update']]);
         $this->middleware('permission:delete user',['only' => ['destroy']]);
         $this->middleware('permission:user status change',['only' => ['changestatus']]);
         $this->middleware('permission:user password reset',['only' => ['passwordreset']]);
+        $this->MasterEntryService = $MasterEntryService;
     }
 
     /**
@@ -36,6 +42,7 @@ class UserController extends Controller
         $UsersWithRoles = User::with('roles')->get();
         $Role = Role::all();
         $activeuser = Auth::user();
+        $AllDesignations = $this->MasterEntryService->getAllDesignations();
 
         // save activity log
         activity()
@@ -46,7 +53,8 @@ class UserController extends Controller
         return response()->json([
             "status" => true, 
             'Users' => $UsersWithRoles,
-            'Role' => $Role
+            'Role' => $Role,
+            'AllDesignations' => $AllDesignations
         ],200);
     }
 
@@ -55,61 +63,64 @@ class UserController extends Controller
      */
     public function store(CreateSubUsersRequest $request)
     {
-        try {
-            // $imageName = Str::random(10).$request->user_name.".".$request->profie_image->getClientOriginalExtension();
-                
+        try {                
             $input = $request->all();
             $password = Str::random(8); 
             $input['password'] = bcrypt($password);
-            $input['status'] = true;
-            // $input['profie_image'] = $imageName;
-            
-            if ($request->hasFile('profile_image')) {
+
+            $user = Auth::user();
+            $tenant_db_name = $user->tenant_db_name;
+
+            if ($request->hasfile('profile_image')) {
                 $file = $request->file('profile_image');
-                $name = time() . '_' .$input['name']. $file->getClientOriginalName();
-                $file->move(public_path('uploads/profile_image'), $name);
-                $profileImage = 'uploads/profile_image/' . $name;
-                $input['profie_image'] = $profileImage;
+                $name = time() . '_' . $file->getClientOriginalName();
+                // Store the file and get the path
+                $filePath = $file->storeAs('public/uploads/profile_image', $name);
+                // Add the path to the array
+                $input['profie_image'] = $name;
             }
 
-            $user = User::create($input);
-
-            // Save Image in Storage folder
-            // Storage::disk('public')->put($imageName, file_get_contents($request->profie_image));
-            
-            $user->syncRoles($request->roles);
-            
-            // $headertoken = Str::random(10);
-            // $verifytoken = Str::random(6);
-            // $expiration = Carbon::now()->addDay(1);
+            // Call your pre-login API endpoint
+            $response = Http::timeout(15)->post('http://213.199.44.42:8000/api/v1/tenant_user_register', [
+                'user_name' => $input['user_name'],
+                'name' => $input['name'],
+                'contact_no' => $input['contact_no'],
+                'contact_person' => $input['contact_person'],
+                'address' => $input['address'],
+                'user_description' => $input['user_description'],
+                'tenant_db_name' => $tenant_db_name,
+                'email' => $input['email'],
+                'password' => $input['password'],
+            ]);
+            if ($response->successful()) {
+                $user = User::create($input);
+                $user->syncRoles($request->roles);
     
-            // UserVerify::create([
-            //     'user_id' => $user->id,
-            //     'headertoken' => $headertoken,
-            //     'token' => $verifytoken,
-            //     'expiry_date' => $expiration
-            //     ]);
+                Mail::send('email.subuseremailVerificationEmail', ['password' => $password], function($message) use($request){
+                    $message->to($request->email);
+                    $message->subject('Email Verification Mail');
+                });
     
-            Mail::send('email.subuseremailVerificationEmail', ['password' => $password], function($message) use($request){
-                $message->to($request->email);
-                $message->subject('Email Verification Mail');
-            });
-
-            // Return Json Response
-            return response()->json([
-                'message' => "User Account successfully created."
-            ],200);
+                // Return Json Response
+                return response()->json([
+                    'message' => "User Account successfully created."
+                ],200);
+            }else {
+                // Handle the case where the API request failed
+                return response()->json(['error'=>'Unauthorised'], 401); 
+                // Log error or perform error handling
+            }
         } catch (\Throwable $th) {
-                    return response()->json([
-                        'status' => false,
-                        'message' => $th->getMessage()
-                    ], 500);
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
         }
     }
 
     /**
      * Update the specified resource in storage.
-     */
+     */ 
     public function updateuserdata(Request $request, $userid)
     {
         try {
@@ -191,18 +202,18 @@ class UserController extends Controller
         try {
             $user = User::findOrFail($userid);
 
-            $user->status = $request->status;
-    
+            $user->is_user_blocked = $request->is_user_blocked;
+     
             // Update user status
             $user->save();
 
-            if($request->status == 1){
+            if($request->is_user_blocked == 1){
                 $statusmessage = "your account is activate";
                 Mail::send('email.accountstatusEmail', ['statusmessage' => $statusmessage], function($message) use($user){
                     $message->to($user->email);
                     $message->subject('Password reset email');
                 });
-            }elseif ($request->status == 1) {
+            }elseif ($request->is_user_blocked == 1) {
                 $statusmessage = "your account is deactivate";
                 Mail::send('email.accountstatusEmail', ['statusmessage' => $statusmessage], function($message) use($user){
                     $message->to($user->email);

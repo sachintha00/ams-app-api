@@ -6,13 +6,13 @@ export UID
 export GID
 
 up-f:
-	docker compose -f docker-compose-dev.yml up --build --remove-orphans
+	docker compose -f docker-compose-dev.yml up --build
 
 up:
-	docker compose -f docker-compose-dev.yml up -d --build --remove-orphans 
+	docker compose -f docker-compose-dev.yml up -d --build
 
 down:
-	docker compose -f docker-compose-dev.yml down --remove-orphans
+	docker compose -f docker-compose-dev.yml down
 
 shell:
 	docker exec -u www-data -it app /bin/sh

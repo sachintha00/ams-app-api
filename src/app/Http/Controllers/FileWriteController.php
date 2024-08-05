@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-// use Illuminate\Http\Request;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -35,7 +34,6 @@ class FileWriteController extends Controller
             return response()->json(['error' => 'Failed to write to file: ' . $e->getMessage()], 500);
         }
     }
-
 
     public function readFile(Request $request)
     {
