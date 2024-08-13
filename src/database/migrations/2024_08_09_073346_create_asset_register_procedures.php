@@ -218,7 +218,7 @@ return new class extends Migration
                                         p_insurance_document,
                                         p_expected_life_time,
                                         p_depreciation_value,
-                                        (asset_detail->>'responsiblePerson')::BIGINT,
+                                        (asset_detail->>'selectedUser')::BIGINT,
                                         asset_detail->>'storedLocation',
                                         (asset_detail->>'organization')::BIGINT, 
                                         p_registered_by,

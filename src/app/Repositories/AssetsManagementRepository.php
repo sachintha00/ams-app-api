@@ -16,6 +16,7 @@ class AssetsManagementRepository
         $p_assets_document = json_encode($data['p_assets_document']);
         $p_purchase_document = json_encode($data['p_purchase_document']);
         $p_insurance_document = json_encode($data['p_insurance_document']);
+        $p_asset_details = is_array($data['p_asset_details']) ? json_encode($data['p_asset_details']) : $data['p_asset_details'];
 
         DB::beginTransaction();
 
@@ -42,10 +43,10 @@ class AssetsManagementRepository
                 $data['p_expected_life_time'],
                 $data['p_depreciation_value'], 
                 $data['p_registered_by'],
-                // $data['p_deleted'],
-                // $data['p_deleted_at'],
-                // $data['p_deleted_by'],
-                json_encode($data['p_asset_details'])
+                $data['p_deleted'],
+                $data['p_deleted_at'],
+                $data['p_deleted_by'],
+                $p_asset_details
             ]);
 
             DB::commit();

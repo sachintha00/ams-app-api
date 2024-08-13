@@ -8,6 +8,7 @@ use App\Services\AssetsManagementService;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class AssetsManagementController extends Controller
 {
@@ -59,8 +60,8 @@ class AssetsManagementController extends Controller
             if ($request->hasFile('p_thumbnail_image')) {
                 $file = $request->file('p_thumbnail_image');
                 $name = time() . '_' .$input['name']. $file->getClientOriginalName();
-                $file->move(public_path('uploads/thumbnail_image'), $name);
-                $thumbnailImage = 'uploads/thumbnail_image/' . $name;
+                $file->move(public_path('uploads/assets/thumbnail_image'), $name);
+                $thumbnailImage = 'uploads/assets/thumbnail_image/' . $name;
                 $input['p_thumbnail_image'] = $thumbnailImage;
             }
 
@@ -68,8 +69,8 @@ class AssetsManagementController extends Controller
             if ($request->hasfile('p_assets_document')) {
                 foreach ($request->file('p_assets_document') as $file) {
                     $name = time() . '_' . $file->getClientOriginalName();
-                    $file->move(public_path('uploads'), $name);
-                    $assetsDocument[] = 'uploads/assets_document/' . $name;
+                    $file->move(public_path('uploads/assets/assets_document'), $name);
+                    $assetsDocument[] = 'uploads/assets/assets_document/' . $name;
                 }
             }
             $input['p_assets_document'] = $assetsDocument;
@@ -78,8 +79,8 @@ class AssetsManagementController extends Controller
             if ($request->hasfile('p_purchase_document')) {
                 foreach ($request->file('p_purchase_document') as $file) {
                     $name = time() . '_' . $file->getClientOriginalName();
-                    $file->move(public_path('uploads'), $name);
-                    $purchaseDocument[] = 'uploads/purchase_document/' . $name;
+                    $file->move(public_path('uploads/assets/purchase_document'), $name);
+                    $purchaseDocument[] = 'uploads/assets/purchase_document/' . $name;
                 }
             }
             $input['p_purchase_document'] = $purchaseDocument;
@@ -88,8 +89,8 @@ class AssetsManagementController extends Controller
             if ($request->hasfile('p_insurance_document')) {
                 foreach ($request->file('p_insurance_document') as $file) {
                     $name = time() . '_' . $file->getClientOriginalName();
-                    $file->move(public_path('uploads'), $name);
-                    $insuranceDocument[] = 'uploads/insurance_document/' . $name;
+                    $file->move(public_path('uploads/assets/insurance_document'), $name);
+                    $insuranceDocument[] = 'uploads/assets/insurance_document/' . $name;
                 }
             }
             $input['p_insurance_document'] = $insuranceDocument;
@@ -99,25 +100,39 @@ class AssetsManagementController extends Controller
             $currentTime = Carbon::now();
             $input['p_register_date'] = $currentTime;
 
-            $asset_details = $request->input('asset_details');
+            // if (isset($data['p_asset_details'])) {
+            //     if (is_string($data['p_asset_details'])) {
+            //         $decodedItems = json_decode($data['p_asset_details'], true);
+            //         if (json_last_error() === JSON_ERROR_NONE) {
+            //             $data['p_asset_details'] = $decodedItems;
+            //         } else {
+            //             throw new \Exception('asset details must be a valid JSON string or array');
+            //         }
+            //     }
+            //     if (!is_array($data['p_asset_details'])) {
+            //         throw new \Exception('asset details must be a valid array');
+            //     }
+            // } else {
+            //     $data['p_asset_details'] = [];
+            // }
 
-            foreach ($asset_details as &$detail) {
-                // Generate the unique URL based on model number and serial number
-                $uniqueIdentifier = $detail['modelNumber'] . '-' . $detail['serialNumber'];
+            // foreach ($asset_details as &$detail) {
+            //     // Generate the unique URL based on model number and serial number
+            //     $uniqueIdentifier = $detail['modelNumber'] . '-' . $detail['serialNumber'];
 
-                $qrCodeUrl = "https://nextjs.example.com/assets/{$uniqueIdentifier}";
+            //     $qrCodeUrl = "https://nextjs.example.com/assets/{$uniqueIdentifier}";
                     
-                $qrCodePath = 'qrcodes/' . uniqid() . '.png';
+            //     $qrCodePath = 'qrcodes/' . uniqid() . '.png';
                     
-                // Generate the QR code with the URL
-                // QrCode::format('png')->generate($qrCodeUrl, public_path($qrCodePath));
+            //     // Generate the QR code with the URL
+            //     // QrCode::format('png')->generate($qrCodeUrl, public_path($qrCodePath));
                     
-                // Store the QR code path in the asset details
-                $detail['qr_code'] = url($qrCodePath);
-            }
+            //     // Store the QR code path in the asset details
+            //     $detail['qr_code'] = url($qrCodePath);
+            // }
 
             // Encode the modified asset details array into JSON
-            $input['p_asset_details'] = $asset_details;
+            // $input['p_asset_details'] = $asset_details;
             $input['p_deleted'] = false;
             $input['p_deleted_at'] = null;
             $input['p_deleted_by'] = null;

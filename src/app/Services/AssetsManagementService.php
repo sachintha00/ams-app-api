@@ -2,6 +2,7 @@
 namespace App\Services;
 
 use App\Repositories\AssetsManagementRepository;
+use Illuminate\Support\Facades\Log;
 
 class AssetsManagementService
 {
@@ -20,6 +21,7 @@ class AssetsManagementService
      */
     public function createAssetRegister(array $data)
     {
+        Log::info($data);
         $this->AssetsManagementRepository->createAssetRegister($data);
     }
 }
