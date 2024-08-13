@@ -4,14 +4,20 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\MasterEntryService;
+use App\Services\AssetsManagementService;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class AssetsManagementController extends Controller
 {
     protected $MasterEntryService;
+    protected $AssetsManagementService;
 
-    public function __construct(MasterEntryService $MasterEntryService)
+    public function __construct(MasterEntryService $MasterEntryService, AssetsManagementService $AssetsManagementService)
     {
         $this->MasterEntryService = $MasterEntryService;
+        $this->AssetsManagementService = $AssetsManagementService;
     }
     /**
      * Display a listing of the resource.
@@ -46,64 +52,83 @@ class AssetsManagementController extends Controller
      */
     public function store(Request $request)
     {
-        if ($request->hasFile('thumbnail_image')) {
-            $file = $request->file('thumbnail_image');
-            $name = time() . '_' .$input['name']. $file->getClientOriginalName();
-            $file->move(public_path('uploads/thumbnail_image'), $name);
-            $thumbnailImage = 'uploads/thumbnail_image/' . $name;
-            $p_thumbnail_image = $thumbnailImage;
-        }
+        try {
 
-        $assetsDocument = [];
-        if ($request->hasfile('assets_document')) {
-            foreach ($request->file('assets_document') as $file) {
-                $name = time() . '_' . $file->getClientOriginalName();
-                $file->move(public_path('uploads'), $name);
-                $assetsDocument[] = 'uploads/assets_document/' . $name;
+            $input = $request->all();
+
+            if ($request->hasFile('p_thumbnail_image')) {
+                $file = $request->file('p_thumbnail_image');
+                $name = time() . '_' .$input['name']. $file->getClientOriginalName();
+                $file->move(public_path('uploads/thumbnail_image'), $name);
+                $thumbnailImage = 'uploads/thumbnail_image/' . $name;
+                $input['p_thumbnail_image'] = $thumbnailImage;
             }
-        }
-        $p_assets_document = $assetsDocument;
 
-        $purchaseDocument = [];
-        if ($request->hasfile('purchase_document')) {
-            foreach ($request->file('purchase_document') as $file) {
-                $name = time() . '_' . $file->getClientOriginalName();
-                $file->move(public_path('uploads'), $name);
-                $purchaseDocument[] = 'uploads/purchase_document/' . $name;
+            $assetsDocument = [];
+            if ($request->hasfile('p_assets_document')) {
+                foreach ($request->file('p_assets_document') as $file) {
+                    $name = time() . '_' . $file->getClientOriginalName();
+                    $file->move(public_path('uploads'), $name);
+                    $assetsDocument[] = 'uploads/assets_document/' . $name;
+                }
             }
-        }
-        $p_purchase_document = $purchaseDocument;
+            $input['p_assets_document'] = $assetsDocument;
 
-        $insuranceDocument = [];
-        if ($request->hasfile('insurance_document')) {
-            foreach ($request->file('insurance_document') as $file) {
-                $name = time() . '_' . $file->getClientOriginalName();
-                $file->move(public_path('uploads'), $name);
-                $insuranceDocument[] = 'uploads/insurance_document/' . $name;
+            $purchaseDocument = [];
+            if ($request->hasfile('p_purchase_document')) {
+                foreach ($request->file('p_purchase_document') as $file) {
+                    $name = time() . '_' . $file->getClientOriginalName();
+                    $file->move(public_path('uploads'), $name);
+                    $purchaseDocument[] = 'uploads/purchase_document/' . $name;
+                }
             }
-        }
-        $p_insurance_document = $insuranceDocument;
+            $input['p_purchase_document'] = $purchaseDocument;
 
-        $p_qr_code = $request->input('qr_code');
-        $p_register_date = $request->input('register_date');
-        $p_assets_type = $request->input('assets_type');
-        $p_category = $request->input('category');
-        $p_sub_category = $request->input('sub_category');
-        $p_assets_value = $request->input('assets_value');
-        $p_supplier = $request->input('supplier');
-        $p_purchase_order_number = $request->input('purchase_order_number');
-        $p_purchase_cost = $request->input('purchase_cost');
-        $p_purchase_type = $request->input('purchase_type');
-        $p_received_condition = $request->input('received_condition');
-        $p_warranty = $request->input('warranty');
-        $p_other_purchase_details = $request->input('other_purchase_details');
-        $p_insurance_number = $request->input('insurance_number');
-        $p_expected_life_time = $request->input('expected_life_time');
-        $p_depreciation_value = $request->input('depreciation_value');
-        $p_registered_by = $request->input('registered_by');
-        $p_deleted = $request->input('deleted', false); // Default to false if not provided
-        $p_deleted_at = $request->input('deleted_at', null);
-        $p_deleted_by = $request->input('deleted_by', null);
+            $insuranceDocument = [];
+            if ($request->hasfile('p_insurance_document')) {
+                foreach ($request->file('p_insurance_document') as $file) {
+                    $name = time() . '_' . $file->getClientOriginalName();
+                    $file->move(public_path('uploads'), $name);
+                    $insuranceDocument[] = 'uploads/insurance_document/' . $name;
+                }
+            }
+            $input['p_insurance_document'] = $insuranceDocument;
+
+            $input['p_registered_by'] = Auth::id();
+
+            $currentTime = Carbon::now();
+            $input['p_register_date'] = $currentTime;
+
+            $asset_details = $request->input('asset_details');
+
+            foreach ($asset_details as &$detail) {
+                // Generate the unique URL based on model number and serial number
+                $uniqueIdentifier = $detail['modelNumber'] . '-' . $detail['serialNumber'];
+
+                $qrCodeUrl = "https://nextjs.example.com/assets/{$uniqueIdentifier}";
+                    
+                $qrCodePath = 'qrcodes/' . uniqid() . '.png';
+                    
+                // Generate the QR code with the URL
+                // QrCode::format('png')->generate($qrCodeUrl, public_path($qrCodePath));
+                    
+                // Store the QR code path in the asset details
+                $detail['qr_code'] = url($qrCodePath);
+            }
+
+            // Encode the modified asset details array into JSON
+            $input['p_asset_details'] = $asset_details;
+            $input['p_deleted'] = false;
+            $input['p_deleted_at'] = null;
+            $input['p_deleted_by'] = null;
+
+            $this->AssetsManagementService->createAssetRegister($input); 
+
+            return response()->json(['message' => 'assest saved successfully'], 201);
+
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to submit Assest', 'message' => $e->getMessage()], 500);
+        }
     }
 
     /**

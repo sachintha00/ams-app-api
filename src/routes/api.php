@@ -153,6 +153,7 @@ Route::prefix('v1')->group(function(){
         Route::get('/profile-image/{filename}', [ImageController::class, 'show']);
 
         Route::get("all-assests", [AssetsManagementController::class, "index"]);
+        Route::post("add-new-assests", [AssetsManagementController::class, "store"]); 
     });
     Route::get("test", function (Request $request){
         // dd($request->header('name'));

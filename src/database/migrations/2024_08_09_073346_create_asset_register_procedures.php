@@ -132,7 +132,6 @@ return new class extends Migration
             $procedure = <<<SQL
                             CREATE OR REPLACE PROCEDURE create_full_asset_register(
                                 IN p_thumbnail_image VARCHAR(255),
-                                IN p_qr_code VARCHAR(255),
                                 IN p_register_date TIMESTAMP,
                                 IN p_assets_type BIGINT,
                                 IN p_category BIGINT,
@@ -200,7 +199,7 @@ return new class extends Migration
                                         asset_detail->>'modelNumber', 
                                         asset_detail->>'serialNumber', 
                                         p_thumbnail_image,
-                                        p_qr_code,
+                                        asset_detail->>'p_qr_code',
                                         p_register_date,
                                         p_assets_type,
                                         p_category,
