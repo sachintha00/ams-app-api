@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('model_number')->nullable();
             $table->string('serial_number')->nullable();
-            $table->string('thumbnail_image')->nullable();
+            $table->json('thumbnail_image')->nullable();
             $table->string('qr_code')->nullable();
             $table->dateTime('register_date');
             $table->unsignedBigInteger('assets_type');

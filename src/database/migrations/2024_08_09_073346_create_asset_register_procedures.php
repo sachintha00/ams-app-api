@@ -131,7 +131,7 @@ return new class extends Migration
 
             $procedure = <<<SQL
                             CREATE OR REPLACE PROCEDURE create_full_asset_register(
-                                IN p_thumbnail_image VARCHAR(255),
+                                IN p_thumbnail_image JSON,
                                 IN p_register_date TIMESTAMP,
                                 IN p_assets_type BIGINT,
                                 IN p_category BIGINT,

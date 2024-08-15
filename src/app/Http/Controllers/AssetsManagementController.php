@@ -9,6 +9,8 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Facades\Image;
 
 class AssetsManagementController extends Controller
 {
@@ -30,6 +32,7 @@ class AssetsManagementController extends Controller
             $allassesttype = $this->MasterEntryService->getAllAssetsTypes();
             $allavailabilitytype = $this->MasterEntryService->getAllAvailabilityTypes();
             $Allassetcategories = $this->MasterEntryService->getAllAssetCategories();
+            $allassests = $this->AssetsManagementService->getAllAssets();
 
             foreach($Allassetcategories as $AllAssetCategories){
                 $AllAssetCategories->sub_categories = json_decode($AllAssetCategories->sub_categories);
@@ -39,6 +42,7 @@ class AssetsManagementController extends Controller
                 'allassesttype' => $allassesttype,
                 'allavailabilitytype' => $allavailabilitytype,
                 'Allassetcategories' => $Allassetcategories,
+                'Allassests' => $allassests
             ]);
         } catch (\Throwable $th) {
             return response()->json([
@@ -57,13 +61,30 @@ class AssetsManagementController extends Controller
 
             $input = $request->all();
 
-            if ($request->hasFile('p_thumbnail_image')) {
-                $file = $request->file('p_thumbnail_image');
-                $name = time() . '_' .$input['name']. $file->getClientOriginalName();
-                $file->move(public_path('uploads/assets/thumbnail_image'), $name);
-                $thumbnailImage = 'uploads/assets/thumbnail_image/' . $name;
-                $input['p_thumbnail_image'] = $thumbnailImage;
+            $thumbnailImage = [];
+            if ($request->hasfile('p_thumbnail_image')) {
+                foreach ($request->file('p_thumbnail_image') as $file) {
+                    $name = time() . '_' . $file->getClientOriginalName();
+                    $file->move(public_path('uploads/assets/thumbnail_image'), $name);
+                    $thumbnailImage[] = 'uploads/assets/thumbnail_image/' . $name;
+                }
             }
+            $input['p_thumbnail_image'] = $thumbnailImage;
+
+            // $thumbnailImage = [];
+            // if ($request->hasfile('p_thumbnail_image')) {
+            //     foreach ($request->file('p_thumbnail_image') as $file) {
+            //         $image = Image::make($file)->resize(300, 300, function ($constraint) {
+            //             $constraint->aspectRatio();
+            //             $constraint->upsize();
+            //         });
+            //         $name = time() . '_' . $file->getClientOriginalName();
+            //         $path = 'uploads/assets/thumbnail_image' . $name;
+            //         Storage::put($path, (string) $image->encode());
+            //         $thumbnailImage[] = $path;
+            //     }
+            // }
+            // $input['p_thumbnail_image'] = $thumbnailImage;
 
             $assetsDocument = [];
             if ($request->hasfile('p_assets_document')) {
