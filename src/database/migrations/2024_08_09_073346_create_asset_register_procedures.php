@@ -131,13 +131,13 @@ return new class extends Migration
 
             $procedure = <<<SQL
                             CREATE OR REPLACE PROCEDURE create_full_asset_register(
-                                IN p_thumbnail_image JSON,
+                                IN p_thumbnail_image JSONB,
                                 IN p_register_date TIMESTAMP,
                                 IN p_assets_type BIGINT,
                                 IN p_category BIGINT,
                                 IN p_sub_category BIGINT,
                                 IN p_assets_value DECIMAL(10, 2),
-                                IN p_assets_document JSON,
+                                IN p_assets_document JSONB,
                                 IN p_supplier BIGINT,
                                 IN p_purchase_order_number VARCHAR(255),
                                 IN p_purchase_cost DECIMAL(10, 2),
@@ -145,24 +145,24 @@ return new class extends Migration
                                 IN p_received_condition VARCHAR(255),
                                 IN p_warranty VARCHAR(255),
                                 IN p_other_purchase_details TEXT,
-                                IN p_purchase_document JSON,
+                                IN p_purchase_document JSONB,
                                 IN p_insurance_number VARCHAR(255),
-                                IN p_insurance_document JSON,
+                                IN p_insurance_document JSONB,
                                 IN p_expected_life_time VARCHAR(255),
                                 IN p_depreciation_value DECIMAL(10, 2),
                                 IN p_registered_by BIGINT,
                                 IN p_deleted BOOLEAN,
                                 IN p_deleted_at TIMESTAMP,
                                 IN p_deleted_by BIGINT,
-                                IN p_asset_details JSON
+                                IN p_asset_details JSONB
                             )
                             LANGUAGE plpgsql
                             AS \$\$
                             DECLARE
-                                asset_detail JSON;
+                                asset_detail JSONB;
                             BEGIN
                                 -- Loop through the items JSON array and insert each item
-                                FOR asset_detail IN SELECT * FROM json_array_elements(p_asset_details)
+                                FOR asset_detail IN SELECT * FROM jsonb_array_elements(p_asset_details)
                                 LOOP
                                     INSERT INTO assets (
                                         model_number,

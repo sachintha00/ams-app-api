@@ -15,14 +15,14 @@ return new class extends Migration
             $table->id();
             $table->string('model_number')->nullable();
             $table->string('serial_number')->nullable();
-            $table->json('thumbnail_image')->nullable();
+            $table->jsonb('thumbnail_image')->nullable();
             $table->string('qr_code')->nullable();
             $table->dateTime('register_date');
             $table->unsignedBigInteger('assets_type');
             $table->unsignedBigInteger('category');
             $table->unsignedBigInteger('sub_category');
             $table->decimal('assets_value', 10, 2)->nullable();
-            $table->json('assets_document')->nullable();
+            $table->jsonb('assets_document')->nullable();
             $table->unsignedBigInteger('supplier');
             $table->string('purchase_order_number')->nullable();
             $table->decimal('purchase_cost', 10, 2)->nullable();
@@ -30,9 +30,9 @@ return new class extends Migration
             $table->string('received_condition')->nullable();
             $table->string('warranty')->nullable();
             $table->text('other_purchase_details')->nullable();
-            $table->json('purchase_document')->nullable();
+            $table->jsonb('purchase_document')->nullable();
             $table->string('insurance_number')->nullable();
-            $table->json('insurance_document')->nullable();
+            $table->jsonb('insurance_document')->nullable();
             $table->string('expected_life_time')->nullable();
             $table->decimal('depreciation_value', 5, 2)->nullable();
             $table->unsignedBigInteger('responsible_person');

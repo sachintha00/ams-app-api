@@ -8,7 +8,6 @@ use App\Services\AssetsManagementService;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
 
@@ -62,6 +61,10 @@ class AssetsManagementController extends Controller
             $input = $request->all();
 
             $thumbnailImage = [];
+            $assetsDocument = []; 
+            $purchaseDocument = [];
+            $insuranceDocument = [];
+
             if ($request->hasfile('p_thumbnail_image')) {
                 foreach ($request->file('p_thumbnail_image') as $file) {
                     $name = time() . '_' . $file->getClientOriginalName();
@@ -69,7 +72,6 @@ class AssetsManagementController extends Controller
                     $thumbnailImage[] = 'uploads/assets/thumbnail_image/' . $name;
                 }
             }
-            $input['p_thumbnail_image'] = $thumbnailImage;
 
             // $thumbnailImage = [];
             // if ($request->hasfile('p_thumbnail_image')) {
@@ -86,7 +88,7 @@ class AssetsManagementController extends Controller
             // }
             // $input['p_thumbnail_image'] = $thumbnailImage;
 
-            $assetsDocument = [];
+
             if ($request->hasfile('p_assets_document')) {
                 foreach ($request->file('p_assets_document') as $file) {
                     $name = time() . '_' . $file->getClientOriginalName();
@@ -94,9 +96,7 @@ class AssetsManagementController extends Controller
                     $assetsDocument[] = 'uploads/assets/assets_document/' . $name;
                 }
             }
-            $input['p_assets_document'] = $assetsDocument;
 
-            $purchaseDocument = [];
             if ($request->hasfile('p_purchase_document')) {
                 foreach ($request->file('p_purchase_document') as $file) {
                     $name = time() . '_' . $file->getClientOriginalName();
@@ -104,9 +104,7 @@ class AssetsManagementController extends Controller
                     $purchaseDocument[] = 'uploads/assets/purchase_document/' . $name;
                 }
             }
-            $input['p_purchase_document'] = $purchaseDocument;
 
-            $insuranceDocument = [];
             if ($request->hasfile('p_insurance_document')) {
                 foreach ($request->file('p_insurance_document') as $file) {
                     $name = time() . '_' . $file->getClientOriginalName();
@@ -114,6 +112,10 @@ class AssetsManagementController extends Controller
                     $insuranceDocument[] = 'uploads/assets/insurance_document/' . $name;
                 }
             }
+
+            $input['p_thumbnail_image'] = $thumbnailImage;
+            $input['p_assets_document'] = $assetsDocument;
+            $input['p_purchase_document'] = $purchaseDocument;
             $input['p_insurance_document'] = $insuranceDocument;
 
             $input['p_registered_by'] = Auth::id();
