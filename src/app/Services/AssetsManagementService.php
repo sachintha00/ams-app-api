@@ -27,4 +27,9 @@ class AssetsManagementService
     {
         return $this->AssetsManagementRepository->getAllAssets();
     }
+
+    public function deleteAsset($asset_id)
+    {
+        $this->AssetsManagementRepository->deleteAsset($asset_id);
+    }
 }

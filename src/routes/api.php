@@ -154,6 +154,7 @@ Route::prefix('v1')->group(function(){
 
         Route::get("all-assests", [AssetsManagementController::class, "index"]);
         Route::post("add-new-assests", [AssetsManagementController::class, "store"]); 
+        Route::delete('delete-asset/{id}', [AssetsManagementController::class, 'destroy']);
     });
     Route::get("test", function (Request $request){
         // dd($request->header('name'));

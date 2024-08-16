@@ -11,23 +11,40 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // DB::unprepared(
+        //     'CREATE OR REPLACE PROCEDURE STORE_PROCEDURE_REMOVE_ASSETS(
+        //         IN _asset_id bigint,
+        //         IN p_deleted_at TIMESTAMP,
+        //         IN p_deleted_by BIGINT
+        //     )
+        //     LANGUAGE plpgsql
+        //     AS $$
+        //     BEGIN
+        //         UPDATE assets
+        //         SET 
+        //             deleted = TRUE,
+        //             deleted_at = p_deleted_at,
+        //             deleted_by = p_deleted_by
+        //         WHERE id = _asset_id;
+        //         COMMIT;
+        //     END; 
+        //     $$;
+        // ');
         DB::unprepared(
             'CREATE OR REPLACE PROCEDURE STORE_PROCEDURE_REMOVE_ASSETS(
                 IN _asset_id bigint,
-                IN p_deleted BOOLEAN,
-                IN p_register_date TIMESTAMP,
-                IN p_registered_by BIGINT
+                IN p_deleted_at TIMESTAMP,
+                IN p_deleted_by BIGINT
             )
             LANGUAGE plpgsql
             AS $$
             BEGIN
                 UPDATE assets
                 SET 
-                    deleted = p_deleted,
-                    deleted_at = p_register_date,
-                    deleted_at = p_registered_by
+                    deleted = TRUE,
+                    deleted_at = p_deleted_at,
+                    deleted_by = p_deleted_by
                 WHERE id = _asset_id;
-                COMMIT;
             END; 
             $$;
         ');

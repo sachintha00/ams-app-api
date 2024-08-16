@@ -2,6 +2,8 @@
 namespace App\Repositories;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class AssetsManagementRepository
 {
@@ -99,6 +101,30 @@ class AssetsManagementRepository
                 'success' => false,
                 'error' => $e->getMessage(),
             ];
+        }
+    }
+
+    public function deleteAsset($asset_id)
+    {
+        DB::beginTransaction();
+
+        try {
+            $currentTime = Carbon::now();
+            $p_deleted_at = $currentTime;
+
+            $p_deleted_by = Auth::id();
+
+            // Call the stored procedure
+            DB::statement('CALL STORE_PROCEDURE_REMOVE_ASSETS(?, ?, ?)', [
+                $asset_id,
+                $p_deleted_at,
+                $p_deleted_by
+            ]);
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
         }
     }
 

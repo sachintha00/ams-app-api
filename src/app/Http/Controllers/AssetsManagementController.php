@@ -190,6 +190,13 @@ class AssetsManagementController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        try {
+            $this->AssetsManagementService->deleteAsset($id); 
+
+            return response()->json(['message' => 'assest saved successfully'], 201);
+
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to submit Assest', 'message' => $e->getMessage()], 500);
+        }
     }
 }
