@@ -12,17 +12,21 @@ return new class extends Migration
     public function up(): void
     {
         DB::unprepared(
-            'CREATE OR REPLACE PROCEDURE update_asset_requisition_status(
-                IN _requisition_id VARCHAR(255),
-                IN _requisition_status VARCHAR(255)
+            'CREATE OR REPLACE PROCEDURE STORE_PROCEDURE_REMOVE_ASSETS(
+                IN _asset_id bigint,
+                IN p_deleted BOOLEAN,
+                IN p_register_date TIMESTAMP,
+                IN p_registered_by BIGINT
             )
             LANGUAGE plpgsql
             AS $$
             BEGIN
-                UPDATE asset_requisitions
-                SET requisition_status = _status
-                WHERE requisition_id = _requestId;
-
+                UPDATE assets
+                SET 
+                    deleted = p_deleted,
+                    deleted_at = p_register_date,
+                    deleted_at = p_registered_by
+                WHERE id = _asset_id;
                 COMMIT;
             END; 
             $$;

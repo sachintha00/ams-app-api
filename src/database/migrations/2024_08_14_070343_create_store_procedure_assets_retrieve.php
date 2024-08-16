@@ -79,9 +79,9 @@ return new class extends Migration
                 INNER JOIN
                     users ur ON a.registered_by = ur.id
                 WHERE
-                    a.id = p_asset_id OR p_asset_id IS NULL OR p_asset_id = 0
+                    (a.id = p_asset_id OR p_asset_id IS NULL OR p_asset_id = 0)
                 AND 
-                    deleted = false
+                    a.deleted = FALSE
                 GROUP BY
                 a.id, ast.id, ac.id, assc.id, s.id, arat.id, u.id, o.id, ur.id;
             END;
