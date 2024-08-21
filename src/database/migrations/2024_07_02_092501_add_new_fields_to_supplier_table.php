@@ -8,11 +8,11 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('supplair', function (Blueprint $table) {
+        Schema::table('suppliers', function (Blueprint $table) {
             $table->json('supplier_asset_classes')->nullable();
             $table->bigInteger('supplier_rating')->nullable();
-            $table->string('supplier_bussiness_name')->nullable();
-            $table->string('supplier_bussiness_register_no')->nullable();
+            $table->string('supplier_business_name')->nullable();
+            $table->string('supplier_business_register_no')->nullable();
             $table->string('supplier_primary_email')->nullable();
             $table->string('supplier_secondary_email')->nullable();
             $table->string('supplier_br_attachment')->nullable();
@@ -28,11 +28,11 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::table('supplair', function (Blueprint $table) {
+        Schema::table('suppliers', function (Blueprint $table) {
             $table->dropColumn('supplier_asset_classes');
             $table->dropColumn('supplier_rating');
-            $table->dropColumn('supplier_bussiness_name');
-            $table->dropColumn('supplier_bussiness_register_no');
+            $table->dropColumn('supplier_business_name');
+            $table->dropColumn('supplier_business_register_no');
             $table->dropColumn('supplier_primary_email');
             $table->dropColumn('supplier_secondary_email');
             $table->dropColumn('supplier_br_attachment');

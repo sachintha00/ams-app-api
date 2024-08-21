@@ -12,6 +12,8 @@ return new class extends Migration
             $table->id();
             $table->string('workflow_behavior_type');
             $table->timestamps();
+            $table->timestamp('deleted_at')->nullable();
+            $table->boolean('isActive')->default(true);
         });
     }
 

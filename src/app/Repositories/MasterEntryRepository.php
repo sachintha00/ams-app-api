@@ -7,7 +7,7 @@ class MasterEntryRepository
 {
     public function getAllAssetsTypes()
     {
-        DB::select('CALL STORE_PROCEDURE_RETRIEVE_ASSEST_TYPES()');
+        DB::select('CALL STORE_PROCEDURE_RETRIEVE_ASSET_TYPES()');
         $allassesttypeAsArray = DB::table('assest_type_from_store_procedure')->select('*')->get();
         
         return $allassesttypeAsArray;

@@ -22,11 +22,13 @@ return new class extends Migration
                 CREATE TEMP TABLE workflow_request_types_from_store_procedure AS
                 SELECT * FROM workflow_request_types
                 WHERE
-                    (p_workflow_request_type_id IS NULL)
+                    (p_workflow_request_type_id IS NULL
                     OR
-                    (p_workflow_request_type_id = 0)
+                    p_workflow_request_type_id = 0
                     OR
-                    (workflow_request_types.id = p_workflow_request_type_id);
+                    workflow_request_types.id = p_workflow_request_type_id)
+                    AND workflow_request_types.deleted_at IS NULL
+                    AND workflow_request_types.isActive = TRUE;
             END;
             $$ LANGUAGE plpgsql;"
         );

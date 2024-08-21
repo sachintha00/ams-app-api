@@ -34,7 +34,9 @@ return new class extends Migration
                 FROM
                     assest_requisition_period_type arpt
                 WHERE
-                    arpt.id = p_period_type_id OR p_period_type_id IS NULL OR p_period_type_id = 0;
+                    (arpt.id = p_period_type_id OR p_period_type_id IS NULL OR p_period_type_id = 0)
+                    AND arpt.deleted_at IS NULL
+                    AND arpt.isActive = TRUE;
             END;
             $$ LANGUAGE plpgsql;"
         );

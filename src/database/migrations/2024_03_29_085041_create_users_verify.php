@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('token');
             $table->timestamp('expiry_date');
             $table->timestamps();
+            $table->timestamp('deleted_at')->nullable();
+            $table->boolean('isActive')->default(true);
         });
     }
 

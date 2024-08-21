@@ -13,20 +13,20 @@ return new class extends Migration
     public function up(): void
     {
         DB::unprepared(
-            "CREATE OR REPLACE PROCEDURE STORE_PROCEDURE_RETRIEVE_ASSEST_TYPES( 
-                IN p_assest_type_id INT DEFAULT NULL
+            "CREATE OR REPLACE PROCEDURE STORE_PROCEDURE_RETRIEVE_ASSET_TYPES( 
+                IN p_asset_type_id INT DEFAULT NULL
             )
             AS $$
             BEGIN
-                DROP TABLE IF EXISTS assest_type_from_store_procedure;
+                DROP TABLE IF EXISTS asset_type_from_store_procedure;
             
-                IF p_assest_type_id IS NOT NULL AND p_assest_type_id <= 0 THEN
-                    RAISE EXCEPTION 'Invalid p_assest_type_id: %', p_assest_type_id;
+                IF p_asset_type_id IS NOT NULL AND p_asset_type_id <= 0 THEN
+                    RAISE EXCEPTION 'Invalid p_asset_type_id: %', p_asset_type_id;
                 END IF;
             
-                CREATE TEMP TABLE assest_type_from_store_procedure AS
+                CREATE TEMP TABLE asset_type_from_store_procedure AS
                 SELECT
-                    a.id AS assest_type_id,
+                    a.id AS asset_type_id,
                     a.name,
                     a.description,
                     a.created_at,
@@ -34,7 +34,9 @@ return new class extends Migration
                 FROM
                     assets_Types a
                 WHERE
-                    a.id = p_assest_type_id OR p_assest_type_id IS NULL OR p_assest_type_id = 0;
+                    (a.id = p_asset_type_id OR p_asset_type_id IS NULL OR p_asset_type_id = 0)
+                    AND a.deleted_at IS NULL
+                    AND a.isActive = TRUE;
             END;
             $$ LANGUAGE plpgsql;"
         );
@@ -45,6 +47,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        DB::unprepared('DROP PROCEDURE IF EXISTS STORE_PROCEDURE_RETRIEVE_ASSEST_TYPES');
+        DB::unprepared('DROP PROCEDURE IF EXISTS STORE_PROCEDURE_RETRIEVE_ASSET_TYPES');
     }
 };

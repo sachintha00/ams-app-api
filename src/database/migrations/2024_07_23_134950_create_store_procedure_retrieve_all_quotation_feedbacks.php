@@ -20,6 +20,8 @@ return new class extends Migration
                     quotation_feedbacks 
                 WHERE
                     (quotation_feedbacks.id = p_quotation_feedback_id OR p_quotation_feedback_id IS NULL OR p_quotation_feedback_id = 0)
+                    AND quotation_feedbacks.deleted_at IS NULL
+                    AND quotation_feedbacks.isActive = TRUE
                 ORDER BY quotation_feedbacks.id;
             END;
             $$ LANGUAGE plpgsql;"

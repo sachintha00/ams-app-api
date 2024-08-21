@@ -21,7 +21,10 @@ return new class extends Migration
                     RAISE EXCEPTION 'Procurement ID % does not exist', p_workflow_id;
                 END IF;
 
-                DELETE FROM procurement_staff WHERE id = p_procurement_staff_id;
+                -- DELETE FROM procurement_staff WHERE id = p_procurement_staff_id;
+                UPDATE procurement_staff
+                SET deleted_at = NOW(), isActive = FALSE
+                WHERE id = p_procurement_staff_id;
             END;
             $$;"
         );

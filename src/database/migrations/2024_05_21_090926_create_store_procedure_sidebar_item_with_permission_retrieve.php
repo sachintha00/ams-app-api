@@ -45,7 +45,9 @@ return new class extends Migration
                 INNER JOIN
                     tbl_menu tbl ON tbl.permission_id = p.id
                 WHERE
-                    u.id = p_user_id OR p_user_id IS NULL OR p_user_id = 0
+                    (u.id = p_user_id OR p_user_id IS NULL OR p_user_id = 0)
+                    AND w.deleted_at IS NULL
+                    AND w.isActive = TRUE
                 GROUP BY
                 tbl.id, tbl.permission_id, tbl.parent_id, tbl.menuname, tbl.menulink, tbl.icon;
             END;

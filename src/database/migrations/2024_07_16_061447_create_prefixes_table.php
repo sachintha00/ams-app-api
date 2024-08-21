@@ -13,6 +13,8 @@ return new class extends Migration
             $table->foreignId('prefix_type_id')->constrained('prefix_types');
             $table->string('prefix', 255);
             $table->integer('next_id')->nullable();
+            $table->timestamp('deleted_at')->nullable();
+            $table->boolean('isActive')->default(true);
             $table->timestamps();
         });
     }

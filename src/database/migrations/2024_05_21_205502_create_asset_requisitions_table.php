@@ -18,6 +18,8 @@ return new class extends Migration
             $table->foreign('requisition_by')->references('id')->on('users')->onDelete('cascade');
             $table->date('requisition_date');
             $table->string('requisition_status', 255)->nullable();
+            $table->timestamp('deleted_at')->nullable();
+            $table->boolean('isActive')->default(true);
             $table->timestamps();
         });
     }

@@ -39,7 +39,9 @@ return new class extends Migration
                 INNER JOIN
                     workflow_behavior_types wbt ON wd.workflow_detail_behavior_type_id = wbt.id
                 WHERE
-                    w.id = p_workflow_id OR p_workflow_id IS NULL OR p_workflow_id = 0
+                    (w.id = p_workflow_id OR p_workflow_id IS NULL OR p_workflow_id = 0)
+                    AND w.deleted_at IS NULL
+                    AND w.isActive = TRUE
                 GROUP BY
                     w.id, wd.id, wrt.request_type, wt.workflow_type, wbt.workflow_behavior_type;
             END;

@@ -16,6 +16,8 @@ class CreateQuotationFeedbackTable extends Migration
             $table->jsonb('selected_items');
             $table->date('available_date');
             $table->unsignedBigInteger('feedback_fill_by');
+            $table->timestamp('deleted_at')->nullable();
+            $table->boolean('isActive')->default(true);
             $table->timestamps();
 
             $table->foreign('feedback_fill_by')->references('id')->on('users');

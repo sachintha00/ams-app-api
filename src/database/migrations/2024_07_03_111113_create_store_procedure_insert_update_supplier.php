@@ -14,8 +14,8 @@ return new class extends Migration
                 p_description TEXT,
                 p_supplier_asset_classes JSON,
                 p_supplier_rating BIGINT,
-                p_supplier_bussiness_name VARCHAR(255),
-                p_supplier_bussiness_register_no VARCHAR(50),
+                p_supplier_business_name VARCHAR(255),
+                p_supplier_business_register_no VARCHAR(50),
                 p_supplier_primary_email VARCHAR(255),
                 p_supplier_secondary_email VARCHAR(255),
                 p_supplier_br_attachment VARCHAR(255),
@@ -53,15 +53,15 @@ return new class extends Migration
                 IF p_id IS NULL OR p_id = 0 THEN
                     INSERT INTO supplair (
                         name, address, description, created_at, updated_at,
-                        supplier_asset_classes, supplier_rating, supplier_bussiness_name,
-                        supplier_bussiness_register_no, supplier_primary_email, supplier_secondary_email,
+                        supplier_asset_classes, supplier_rating, supplier_business_name,
+                        supplier_business_register_no, supplier_primary_email, supplier_secondary_email,
                         supplier_br_attachment, supplier_website, supplier_tel_no, supplier_mobile,
                         supplier_fax, supplier_city, supplier_location_latitude, supplier_location_longitude,
                         contact_no, supplier_reg_no, supplier_reg_status
                     ) VALUES (
                         p_name, p_address, p_description, NOW(), NOW(),
-                        p_supplier_asset_classes, p_supplier_rating, p_supplier_bussiness_name,
-                        p_supplier_bussiness_register_no, p_supplier_primary_email, p_supplier_secondary_email,
+                        p_supplier_asset_classes, p_supplier_rating, p_supplier_business_name,
+                        p_supplier_business_register_no, p_supplier_primary_email, p_supplier_secondary_email,
                         p_supplier_br_attachment, p_supplier_website, p_supplier_tel_no, p_supplier_mobile,
                         p_supplier_fax, p_supplier_city, p_supplier_location_latitude, p_supplier_location_longitude,
                         p_contact_no, supplier_id, p_supplier_register_status
@@ -70,7 +70,7 @@ return new class extends Migration
                     INSERT INTO supplier_add_response_from_store_procedure (status, message, supplier_id)
                     VALUES ('SUCCESS', 'Supplier Added successfully', return_supplier_id);
                 ELSE
-                    UPDATE supplair
+                    UPDATE supplier
                     SET 
                         name = p_name,
                         address = p_address,
@@ -78,8 +78,8 @@ return new class extends Migration
                         updated_at = NOW(),
                         supplier_asset_classes = p_supplier_asset_classes,
                         supplier_rating = p_supplier_rating,
-                        supplier_bussiness_name = p_supplier_bussiness_name,
-                        supplier_bussiness_register_no = p_supplier_bussiness_register_no,
+                        supplier_business_name = p_supplier_business_name,
+                        supplier_business_register_no = p_supplier_business_register_no,
                         supplier_primary_email = p_supplier_primary_email,
                         supplier_secondary_email = p_supplier_secondary_email,
                         supplier_br_attachment = p_supplier_br_attachment,
@@ -97,17 +97,17 @@ return new class extends Migration
                         VALUES ('SUCCESS', 'Supplier updated successfully', return_supplier_id);
                     
                     IF NOT FOUND THEN
-                        INSERT INTO supplair (
+                        INSERT INTO supplier (
                             name, address, description, created_at, updated_at,
-                            supplier_asset_classes, supplier_rating, supplier_bussiness_name,
-                            supplier_bussiness_register_no, supplier_primary_email, supplier_secondary_email,
+                            supplier_asset_classes, supplier_rating, supplier_business_name,
+                            supplier_business_register_no, supplier_primary_email, supplier_secondary_email,
                             supplier_br_attachment, supplier_website, supplier_tel_no, supplier_mobile,
                             supplier_fax, supplier_city, supplier_location_latitude, supplier_location_longitude,
                             contact_no, supplier_reg_no, supplier_reg_status
                         ) VALUES (
                             p_name, p_address, p_description, NOW(), NOW(),
-                            p_supplier_asset_classes, p_supplier_rating, p_supplier_bussiness_name,
-                            p_supplier_bussiness_register_no, p_supplier_primary_email, p_supplier_secondary_email,
+                            p_supplier_asset_classes, p_supplier_rating, p_supplier_business_name,
+                            p_supplier_business_register_no, p_supplier_primary_email, p_supplier_secondary_email,
                             p_supplier_br_attachment, p_supplier_website, p_supplier_tel_no, p_supplier_mobile,
                             p_supplier_fax, p_supplier_city, p_supplier_location_latitude, p_supplier_location_longitude,
                             p_contact_no, supplier_id, p_supplier_register_status

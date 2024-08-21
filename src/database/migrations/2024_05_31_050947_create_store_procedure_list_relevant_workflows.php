@@ -35,7 +35,9 @@ return new class extends Migration
                     workflows.updated_at
                 FROM workflows
                 WHERE (p_workflow_request_type_id IS NULL OR p_workflow_request_type_id = 0 OR workflows.workflow_request_type_id = p_workflow_request_type_id)
-                    AND (workflows.workflow_status = true);
+                    AND (workflows.workflow_status = true)
+                    AND workflows.deleted_at IS NULL
+                    AND workflows.isActive = TRUE;
             END;
             $$ LANGUAGE plpgsql;"
         );

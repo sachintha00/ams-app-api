@@ -21,8 +21,16 @@ return new class extends Migration
                     RAISE EXCEPTION 'Workflow with ID % does not exist', p_workflow_id;
                 END IF;
             
-                DELETE FROM workflow_details WHERE workflow_id = p_workflow_id;
-                DELETE FROM workflows WHERE id = p_workflow_id;
+                -- DELETE FROM workflow_details WHERE workflow_id = p_workflow_id;
+                -- DELETE FROM workflows WHERE id = p_workflow_id;
+
+                UPDATE workflow_details
+                SET deleted_at = NOW(), isActive = FALSE
+                WHERE workflow_id = p_workflow_id;
+
+                UPDATE workflows
+                SET deleted_at = NOW(), isActive = FALSE
+                WHERE id = p_workflow_id;
             END;
             $$;"
         );

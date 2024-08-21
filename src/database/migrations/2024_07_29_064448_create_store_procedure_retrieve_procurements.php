@@ -25,7 +25,10 @@ return new class extends Migration
                         'date', qf.date,
                         'procurement_id', qf.procurement_id,
                         'selected_supplier_id', qf.selected_supplier_id,
-                        'selected_supplier_name', (SELECT name from supplair WHERE id = qf.selected_supplier_id),
+                        'selected_supplier_name', (SELECT name from supplier WHERE id = qf.selected_supplier_id 
+                            AND deleted_at IS NULL 
+                            AND isActive = TRUE
+                        ),
                         'selected_items', qf.selected_items,
                         'available_date', qf.available_date,
                         'feedback_fill_by', qf.feedback_fill_by,
@@ -34,7 +37,8 @@ return new class extends Migration
                     )) FILTER (WHERE qf.id IS NOT NULL), '[]'::jsonb) AS quotation_feedbacks
                 FROM procurements p
                 LEFT JOIN quotation_feedbacks qf ON p.id = qf.procurement_id
-                WHERE (p_procurement_id != 0 AND p.id = p_procurement_id)
+                WHERE p.deleted_at IS NULL 
+                    AND p.isActive = TRUE AND (p_procurement_id != 0 AND p.id = p_procurement_id)
                 OR (p_procurement_id = 0 AND (p.request_id = p_request_id OR p_request_id IS NULL OR p_request_id = NULL))
                 GROUP BY p.id
                 ORDER BY p.id;

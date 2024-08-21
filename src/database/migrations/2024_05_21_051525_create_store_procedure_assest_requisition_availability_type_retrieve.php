@@ -34,7 +34,9 @@ return new class extends Migration
                 FROM
                     assest_requisition_availability_type arat
                 WHERE
-                    arat.id = p_availability_type_id OR p_availability_type_id IS NULL OR p_availability_type_id = 0;
+                    (arat.id = p_availability_type_id OR p_availability_type_id IS NULL OR p_availability_type_id = 0)
+                    AND arat.deleted_at IS NULL
+                    AND arat.isActive = TRUE;
             END;
             $$ LANGUAGE plpgsql;"
         );

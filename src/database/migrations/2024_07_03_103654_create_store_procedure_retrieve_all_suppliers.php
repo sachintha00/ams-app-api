@@ -17,11 +17,11 @@ return new class extends Migration
 
                 CREATE TEMP TABLE suppliers_from_store_procedure AS
                 SELECT * FROM
-                    supplair 
+                    supplier 
                 WHERE
-                    (supplair.id = p_supplier_id OR p_supplier_id IS NULL OR p_supplier_id = 0)
-	            AND supplair.supplier_reg_status = 'APPROVED'
-                ORDER BY supplair.id;
+                    (supplier.id = p_supplier_id OR p_supplier_id IS NULL OR p_supplier_id = 0)
+	            AND supplier.supplier_reg_status = 'APPROVED'
+                ORDER BY supplier.id;
             END;
             $$ LANGUAGE plpgsql;"
         );

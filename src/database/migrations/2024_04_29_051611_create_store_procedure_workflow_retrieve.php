@@ -19,7 +19,9 @@ return new class extends Migration
                 SELECT * FROM
                     workflows 
                 WHERE
-                    workflows.id = p_workflow_id OR p_workflow_id IS NULL OR p_workflow_id = 0;
+                    (workflows.id = p_workflow_id OR p_workflow_id IS NULL OR p_workflow_id = 0)
+                    AND workflows.deleted_at IS NULL
+                    AND workflows.isActive = TRUE;
             END;
             $$ LANGUAGE plpgsql;"
         );

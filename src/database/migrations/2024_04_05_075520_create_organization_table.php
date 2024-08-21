@@ -15,6 +15,8 @@ return new class extends Migration
             $table->string('relationship')->nullable();
             $table->json('data');
             $table->timestamps();
+            $table->timestamp('deleted_at')->nullable();
+            $table->boolean('isActive')->default(true);
         });
     }
 

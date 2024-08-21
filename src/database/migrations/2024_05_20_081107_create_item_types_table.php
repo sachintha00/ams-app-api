@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('description')->nullable();
+            $table->timestamp('deleted_at')->nullable();
+            $table->boolean('isActive')->default(true);
             $table->timestamps();
         });
     }

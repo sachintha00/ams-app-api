@@ -19,7 +19,9 @@ return new class extends Migration
                 SELECT * FROM
                     assets_types 
                 WHERE
-                    assets_types.id = p_asset_type_id OR p_asset_type_id IS NULL OR p_asset_type_id = 0
+                    (assets_types.id = p_asset_type_id OR p_asset_type_id IS NULL OR p_asset_type_id = 0)
+                    AND assets_types.deleted_at IS NULL
+                    AND assets_types.isActive = TRUE
                 ORDER BY assets_types.id;
             END;
             $$ LANGUAGE plpgsql;"

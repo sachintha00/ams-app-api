@@ -28,6 +28,8 @@ return new class extends Migration
             $table->string('menupath')->nullable();
             $table->string('icon')->nullable();
             $table->timestamps();
+            $table->timestamp('deleted_at')->nullable();
+            $table->boolean('isActive')->default(true);
         });
     }
 

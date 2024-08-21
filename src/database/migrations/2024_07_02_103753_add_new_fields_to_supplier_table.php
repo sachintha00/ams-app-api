@@ -9,7 +9,7 @@ return new class extends Migration
 
     public function up(): void
     {
-        Schema::table('supplair', function (Blueprint $table) {
+        Schema::table('suppliers', function (Blueprint $table) {
             $table->string('supplier_reg_no')->nullable();
             $table->string('supplier_reg_status')->nullable();
         });
@@ -17,7 +17,7 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::table('supplair', function (Blueprint $table) {
+        Schema::table('suppliers', function (Blueprint $table) {
             $table->dropColumn('supplier_reg_no');
             $table->dropColumn('supplier_reg_status');
         });

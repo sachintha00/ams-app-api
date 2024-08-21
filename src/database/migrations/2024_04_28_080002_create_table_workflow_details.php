@@ -18,6 +18,8 @@ return new class extends Migration
             $table->integer('workflow_detail_level');
             $table->json('workflow_detail_data_object')->nullable();
             $table->timestamps();
+            $table->timestamp('deleted_at')->nullable();
+            $table->boolean('isActive')->default(true);
 
             $table->foreign('workflow_id')->references('id')->on('workflows');
             $table->foreign('workflow_detail_type_id')->references('id')->on('workflow_types');

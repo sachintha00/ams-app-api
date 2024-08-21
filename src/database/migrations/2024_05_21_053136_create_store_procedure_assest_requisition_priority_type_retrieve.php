@@ -34,7 +34,9 @@ return new class extends Migration
                 FROM
                     assest_requisition_priority_type arprt
                 WHERE
-                    arprt.id = p_priority_type_id OR p_priority_type_id IS NULL OR p_priority_type_id = 0;
+                    (arprt.id = p_priority_type_id OR p_priority_type_id IS NULL OR p_priority_type_id = 0)
+                    AND w.deleted_at IS NULL
+                    AND w.isActive = TRUE;
             END;
             $$ LANGUAGE plpgsql;"
         );

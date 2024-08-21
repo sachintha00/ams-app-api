@@ -20,6 +20,8 @@ return new class extends Migration
             $table->date('required_date')->nullable();
             $table->string('comment')->nullable();
             $table->string('procurement_status')->nullable();
+            $table->timestamp('deleted_at')->nullable();
+            $table->boolean('isActive')->default(true);
             $table->timestamps();
             
             $table->foreign('procurement_by')->references('id')->on('users');

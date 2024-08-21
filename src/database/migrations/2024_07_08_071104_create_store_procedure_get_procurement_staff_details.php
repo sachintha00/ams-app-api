@@ -27,7 +27,12 @@ return new class extends Migration
                     JOIN 
                         users u ON ps.user_id = u.id
                     JOIN 
-                        assets_types at ON ps.asset_type_id = at.id;
+                        assets_types at ON ps.asset_type_id = at.id
+                    WHERE
+                        ps.deleted_at IS NULL
+                        AND ps.isActive = TRUE
+                        AND u.deleted_at IS NULL
+                        AND u.isActive = TRUE;
                 END;
                 $$;"
         );

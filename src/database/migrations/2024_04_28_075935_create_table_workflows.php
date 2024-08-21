@@ -15,6 +15,8 @@ return new class extends Migration
             $table->text('workflow_description')->nullable();
             $table->boolean('workflow_status')->default(true);
             $table->timestamps();
+            $table->timestamp('deleted_at')->nullable();
+            $table->boolean('isActive')->default(true);
 
             $table->foreign('workflow_request_type_id')->references('id')->on('workflow_request_types');
         });

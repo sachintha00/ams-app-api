@@ -21,9 +21,11 @@ return new class extends Migration
                 
                     CREATE TEMP TABLE designations_from_store_procedure AS
                     SELECT * FROM designations 
-                        WHERE designations.id = p_designation_id 
+                        WHERE (designations.id = p_designation_id 
                         OR p_designation_id IS NULL 
-                        OR p_designation_id = 0;
+                        OR p_designation_id = 0)
+                        AND designations.deleted_at IS NULL
+                        AND designations.isActive = TRUE;
                 END
             $$ LANGUAGE plpgsql;"
         );

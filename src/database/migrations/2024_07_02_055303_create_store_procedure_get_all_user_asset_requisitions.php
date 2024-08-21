@@ -36,16 +36,16 @@ return new class extends Migration
                             json_build_object(
                                 'item_id', ari.id,
                                 'item_name', ari.item_name,
-                                'assesttype', ari.assesttype,
+                                'asset_type', ari.asset_type,
                                 'quantity', ari.quantity,
                                 'budget', ari.budget,
-                                'business_perpose', ari.business_perpose,
+                                'business_purpose', ari.business_purpose,
                                 'upgrade_or_new', ari.upgrade_or_new,
                                 'period_status', ari.period_status,
                                 'period_from', ari.period_from,
                                 'period_to', ari.period_to,
                                 'period', ari.period,
-                                'availabiity_type', ari.availabiity_type,
+                                'availability_type', ari.availability_type,
                                 'priority', ari.priority,
                                 'required_date', ari.required_date,
                                 'organization', ari.organization,
@@ -68,7 +68,9 @@ return new class extends Migration
                 LEFT JOIN
                     asset_requisitions_items ari ON ar.id = ari.asset_requisition_id
                 WHERE
-                    u.id = p_user_id OR p_user_id IS NULL OR p_user_id = 0
+                    (u.id = p_user_id OR p_user_id IS NULL OR p_user_id = 0)
+                    AND u.deleted_at IS NULL
+                    AND u.isActive = TRUE
                 GROUP BY
                 ar.id;
             END;

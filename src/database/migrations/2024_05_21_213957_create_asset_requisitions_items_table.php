@@ -15,16 +15,16 @@ return new class extends Migration
             $table->id();
             $table->foreignId('asset_requisition_id')->constrained('asset_requisitions')->onDelete('cascade');
             $table->string('item_name', 255);
-            $table->string('assesttype', 255);
+            $table->string('asset_type', 255);
             $table->integer('quantity');
             $table->string('budget')->nullable();
-            $table->string('business_perpose', 255);
+            $table->string('business_purpose', 255);
             $table->string('upgrade_or_new', 255);
             $table->string('period_status', 255);
             $table->date('period_from')->nullable();
             $table->date('period_to')->nullable();
             $table->string('period', 255)->nullable();
-            $table->string('availabiity_type', 255);
+            $table->string('availability_type', 255);
             $table->string('priority', 255);
             $table->date('required_date');
             $table->unsignedBigInteger('organization');
@@ -38,6 +38,8 @@ return new class extends Migration
             $table->json('maintenance_kpi')->nullable();
             $table->json('service_support_kpi')->nullable();
             $table->json('consumables_kpi')->nullable();
+            $table->timestamp('deleted_at')->nullable();
+            $table->boolean('isActive')->default(true);
             $table->timestamps();
         });
     }

@@ -34,7 +34,9 @@ return new class extends Migration
                 FROM
                     item_Types it
                 WHERE
-                    it.id = p_item_type_id OR p_item_type_id IS NULL OR p_item_type_id = 0;
+                    (it.id = p_item_type_id OR p_item_type_id IS NULL OR p_item_type_id = 0)
+                    AND it.deleted_at IS NULL
+                    AND it.isActive = TRUE;
             END;
             $$ LANGUAGE plpgsql;"
         );

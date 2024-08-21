@@ -17,11 +17,15 @@ return new class extends Migration
                     RAISE EXCEPTION 'Supplier ID cannot be null or zero';
                 END IF;
 
-                IF NOT EXISTS (SELECT 1 FROM supplair WHERE id = p_supplier_id) THEN
+                IF NOT EXISTS (SELECT 1 FROM supplier WHERE id = p_supplier_id) THEN
                     RAISE EXCEPTION 'supplier ID % does not exist', p_supplier_id;
                 END IF;
 
-                DELETE FROM supplair WHERE id = p_supplier_id;
+                -- DELETE FROM supplier WHERE id = p_supplier_id;
+
+                UPDATE supplier
+                SET deleted_at = NOW(), isActive = FALSE
+                WHERE id = p_supplier_id;
             END;
             $$;"
         );

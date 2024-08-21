@@ -36,7 +36,7 @@ return new class extends Migration
                                 'name', u.name,
                                 'username', u.user_name,
                                 'contact_no', u.contact_no,
-                                'profie_image', u.profie_image,
+                                'profile_image', u.profile_image,
                                 'email', u.email,
                                 'address', u.address,
                                 'employee_code', u.employee_code,
@@ -72,8 +72,8 @@ return new class extends Migration
                                 'business_impact', ari.business_impact,
                                 'consumables_kpi', ari.consumables_kpi,
                                 'maintenance_kpi', ari.maintenance_kpi,
-                                'availabiity_type', ari.availabiity_type,
-                                'business_purpose', ari.business_perpose,
+                                'availability_type', ari.availability_type,
+                                'business_purpose', ari.business_purpose,
                                 'expected_conditions', ari.expected_conditions,
                                 'service_support_kpi', ari.service_support_kpi,
                                 'asset_requisition_id', ari.asset_requisition_id
@@ -82,7 +82,7 @@ return new class extends Migration
                     FROM 
                         public.asset_requisitions ar
                     JOIN public.asset_requisitions_items ari ON ar.id = ari.asset_requisition_id
-                    JOIN public.assets_types at ON ari.assesttype = at.name
+                    JOIN public.assets_types at ON ari.asset_type = at.name
                     JOIN public.procurement_staff ps ON at.id = ps.asset_type_id
                     WHERE 
                         ar.requisition_status = 'APPROVED'
