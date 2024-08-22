@@ -28,6 +28,11 @@ class AssetsManagementService
         return $this->AssetsManagementRepository->getAllAssets();
     }
 
+    public function updateAsset(array $data)
+    {
+        $this->AssetsManagementRepository->updateAsset($data);
+    }
+
     public function deleteAsset($asset_id)
     {
         $this->AssetsManagementRepository->deleteAsset($asset_id);

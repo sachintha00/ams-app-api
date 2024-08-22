@@ -180,9 +180,63 @@ class AssetsManagementController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request)
     {
-        //
+        try {
+            $input = $request->all();
+
+            $thumbnailImage = [];
+            $assetsDocument = []; 
+            $purchaseDocument = [];
+            $insuranceDocument = [];
+
+            if ($request->hasfile('p_thumbnail_image')) {
+                foreach ($request->file('p_thumbnail_image') as $file) {
+                    $name = time() . '_' . $file->getClientOriginalName();
+                    $file->move(public_path('uploads/assets/thumbnail_image'), $name);
+                    $thumbnailImage[] = 'uploads/assets/thumbnail_image/' . $name;
+                }
+            }
+
+            if ($request->hasfile('p_assets_document')) {
+                foreach ($request->file('p_assets_document') as $file) {
+                    $name = time() . '_' . $file->getClientOriginalName();
+                    $file->move(public_path('uploads/assets/assets_document'), $name);
+                    $assetsDocument[] = 'uploads/assets/assets_document/' . $name;
+                }
+            }
+
+            if ($request->hasfile('p_purchase_document')) {
+                foreach ($request->file('p_purchase_document') as $file) {
+                    $name = time() . '_' . $file->getClientOriginalName();
+                    $file->move(public_path('uploads/assets/purchase_document'), $name);
+                    $purchaseDocument[] = 'uploads/assets/purchase_document/' . $name;
+                }
+            }
+
+            if ($request->hasfile('p_insurance_document')) {
+                foreach ($request->file('p_insurance_document') as $file) {
+                    $name = time() . '_' . $file->getClientOriginalName();
+                    $file->move(public_path('uploads/assets/insurance_document'), $name);
+                    $insuranceDocument[] = 'uploads/assets/insurance_document/' . $name;
+                }
+            }
+
+            $input['p_thumbnail_image'] = $thumbnailImage;
+            $input['p_assets_document'] = $assetsDocument;
+            $input['p_purchase_document'] = $purchaseDocument;
+            $input['p_insurance_document'] = $insuranceDocument;
+
+            $currentTime = Carbon::now();
+            $input['p_updated_at'] = $currentTime;
+
+            $this->AssetsManagementService->updateAsset($input); 
+
+            return response()->json(['message' => 'assest update successfully'], 201);
+
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to submit Assest', 'message' => $e->getMessage()], 500);
+        }
     }
 
     /**

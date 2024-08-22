@@ -31,6 +31,7 @@ return new class extends Migration
                     a.serial_number,
                     a.thumbnail_image,
                     a.qr_code,
+                    a.register_date,
                     a.assets_type as assets_type_id,
                     ast.name as assets_type_name,
                     a.category as category_id,

@@ -104,6 +104,74 @@ class AssetsManagementRepository
         }
     }
 
+    public function updateAsset(array $data)
+    {
+
+        DB::beginTransaction();
+
+        try {
+            // Call the stored procedure
+            DB::statement('CALL STORE_PROCEDURE_UPDATE_ASSETS(
+                ?::bigint,
+                ?::varchar,
+                ?::varchar,
+                ?::bigint,
+                ?::varchar,
+                ?::bigint,
+                ?::jsonb,
+                ?::bigint,
+                ?::bigint,
+                ?::bigint,
+                ?::decimal,
+                ?::jsonb,
+                ?::bigint,
+                ?::varchar,
+                ?::decimal,
+                ?::bigint,
+                ?::varchar,
+                ?::varchar,
+                ?::text,
+                ?::jsonb,
+                ?::varchar,
+                ?::jsonb,
+                ?::varchar,
+                ?::decimal,
+                ?::timestamp
+            )', [
+                $data['asset_id'],
+                $data['p_model_number'],
+                $data['p_serial_number'],
+                $data['p_responsible_person'],
+                $data['p_location'],
+                $data['p_department'],
+                json_encode($data['p_thumbnail_image'], JSON_UNESCAPED_SLASHES),
+                $data['p_assets_type'],
+                $data['p_category'],  
+                $data['p_sub_category'],
+                $data['p_assets_value'],
+                json_encode($data['p_assets_document'], JSON_UNESCAPED_SLASHES),
+                $data['p_supplier'],
+                $data['p_purchase_order_number'], 
+                $data['p_purchase_cost'],
+                $data['p_purchase_type'],
+                $data['p_received_condition'],
+                $data['p_warranty'],
+                $data['p_other_purchase_details'], 
+                json_encode($data['p_purchase_document'], JSON_UNESCAPED_SLASHES),
+                $data['p_insurance_number'],
+                json_encode($data['p_insurance_document'], JSON_UNESCAPED_SLASHES),
+                $data['p_expected_life_time'],
+                $data['p_depreciation_value'], 
+                $data['p_updated_at']
+            ]);            
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
+    }
+
     public function deleteAsset($asset_id)
     {
         DB::beginTransaction();
