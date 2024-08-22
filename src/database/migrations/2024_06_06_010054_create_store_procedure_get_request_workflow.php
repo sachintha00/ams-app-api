@@ -99,7 +99,7 @@ return new class extends Migration
                                     user_object := jsonb_build_object(
                                                         'id', existing_user.id, 
                                                         'name', existing_user.name,
-                                                        'profile_image', existing_user.profie_image
+                                                        'profile_image', existing_user.profile_image
                                                     );
 
                                     user_array := array_append(user_array, user_object);

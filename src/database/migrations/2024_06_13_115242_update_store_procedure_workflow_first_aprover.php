@@ -74,7 +74,7 @@ return new class extends Migration
                                 user_object := jsonb_build_object(
                                     'id', testuser.id, 
                                     'name', testuser.name,
-                                    'profile_image', testuser.profie_image
+                                    'profile_image', testuser.profile_image
                                 );
 
                                 user_array := array_append(user_array, user_object);
@@ -105,7 +105,7 @@ return new class extends Migration
                                     jsonb_build_object(
                                         'id', u.id,
                                         'name', u.name,
-                                        'profile_image', u.profie_image
+                                        'profile_image', u.profile_image
                                     )
                                 ) INTO user_details_according_to_designations
                                 FROM public.users u

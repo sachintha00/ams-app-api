@@ -69,7 +69,7 @@ class UserController extends Controller
                 $name = time() . '_' .$input['name']. $file->getClientOriginalName();
                 $file->move(public_path('uploads/profile_image'), $name);
                 $profileImage = 'uploads/profile_image/' . $name;
-                $input['profie_image'] = $profileImage;
+                $input['profile_image'] = $profileImage;
             }
 
             $user = User::create($input);

@@ -16,32 +16,31 @@ class UserSeeder extends Seeder
     {
         $faker = Faker::create();
 
-        for ($i = 0; $i < 100; $i++) {
-            User::create([
-                'user_name' => $faker->unique()->userName,
-                'email' => $faker->unique()->safeEmail,
-                'name' => $faker->name,
-                'contact_no' => $faker->phoneNumber,
-                'profie_image' => $faker->imageUrl(),
-                'contact_person' => $faker->name,
-                'website' => $faker->url,
-                'address' => $faker->address,
-                'password' => Hash::make('password'),
-                'employee_code' => $faker->randomNumber(5),
-                'security_question' => $faker->sentence,
-                'security_answer' => $faker->sentence,
-                'activation_code' => $faker->uuid,
-                'is_user_blocked' => false,
-                'is_trial_account' => true,
-                'first_login' => $faker->dateTimeThisYear(),
-                'user_description' => $faker->paragraph,
-                'status' => true,
-                'created_user' => $faker->name,
-                'tenant_db_name' => $faker->domainWord,
-                'remember_token' => Str::random(10),
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-        }
+        User::create([
+            'user_name' => 'sachintha',
+            'email' => 'sachintha@gmail.com',
+            'name' => 'Sachintha Madhawa',
+            'contact_no' => $faker->phoneNumber,
+            'profile_image' => substr($faker->imageUrl(), 0, 191),
+            'contact_person' => substr($faker->name, 0, 191),
+            'website' => substr($faker->url, 0, 191),
+            'address' => substr($faker->address, 0, 191),
+            'password' => Hash::make('password'),
+            'employee_code' => $faker->randomNumber(5),
+            'security_question' => substr($faker->sentence, 0, 191),
+            'security_answer' => substr($faker->sentence, 0, 191),
+            'activation_code' => $faker->uuid,
+            'is_user_blocked' => false,
+            'is_trial_account' => true,
+            'first_login' => $faker->dateTimeThisYear(),
+            'user_description' => substr($faker->paragraph, 0, 191),
+            'status' => true,
+            'created_user' => substr($faker->name, 0, 191),
+            'tenant_db_name' => substr($faker->domainWord, 0, 191),
+            'remember_token' => Str::random(10),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        
     }
 }

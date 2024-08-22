@@ -27,7 +27,6 @@ class RoleController extends Controller
         $Role = Role::with('permissions')->get();
         $Permission = Permission::get();
         $user = Auth::user();
-        $wijart = test_wijart::all();
 
         // save activity log
         activity()
@@ -39,7 +38,6 @@ class RoleController extends Controller
             "status" => true,
             'Role' => $Role,
             'Permission' => $Permission,
-            'wijart' => $wijart
         ],200);
     }
 
