@@ -36,6 +36,11 @@ class AssetsManagementController extends Controller
             foreach($Allassetcategories as $AllAssetCategories){
                 $AllAssetCategories->sub_categories = json_decode($AllAssetCategories->sub_categories);
             }
+
+            // $allassests->thumbnail_image = array_map(function($path) {
+            //     return Storage::url($path);
+            // }, $allassests->thumbnail_image);
+
             return response()->json([
                 "status" => true,
                 'allassesttype' => $allassesttype,
@@ -68,10 +73,20 @@ class AssetsManagementController extends Controller
             if ($request->hasfile('p_thumbnail_image')) {
                 foreach ($request->file('p_thumbnail_image') as $file) {
                     $name = time() . '_' . $file->getClientOriginalName();
-                    $file->move(public_path('uploads/assets/thumbnail_image'), $name);
-                    $thumbnailImage[] = 'uploads/assets/thumbnail_image/' . $name;
+                    // Store the file and get the path
+                    $filePath = $file->storeAs('public/uploads/assets/thumbnail_image', $name);
+                    // Add the path to the array
+                    $thumbnailImage[] = $filePath;
                 }
             }
+
+            // if ($request->hasfile('p_thumbnail_image')) {
+            //     foreach ($request->file('p_thumbnail_image') as $file) {
+            //         $name = time() . '_' . $file->getClientOriginalName();
+            //         $file->move(public_path('uploads/assets/thumbnail_image'), $name);
+            //         $thumbnailImage[] = 'uploads/assets/thumbnail_image/' . $name;
+            //     }
+            // }
 
             // $thumbnailImage = [];
             // if ($request->hasfile('p_thumbnail_image')) {
