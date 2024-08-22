@@ -19,8 +19,34 @@ class AssetsManagementRepository
         // $p_assets_document = json_encode($data['p_assets_document']);
         // $p_purchase_document = json_encode($data['p_purchase_document']);
         // $p_insurance_document = json_encode($data['p_insurance_document']);
-        $p_asset_details = is_array($data['p_asset_details']) ? json_encode($data['p_asset_details']) : $data['p_asset_details'];
+        // $p_asset_details = is_array($data['p_asset_details']) ? json_encode($data['p_asset_details']) : $data['p_asset_details'];
+        
+        // Check if 'p_asset_details' is a JSON string and decode it to an array
+        if (isset($data['p_asset_details']) && is_string($data['p_asset_details'])) {
+            $decodedAssetDetails = json_decode($data['p_asset_details'], true);
+            
+            // Ensure decoding was successful
+            if (json_last_error() === JSON_ERROR_NONE) {
+                $data['p_asset_details'] = $decodedAssetDetails;
+            } else {
+                throw new \Exception("Invalid JSON in 'p_asset_details'.");
+            }
+        }
 
+        // Ensure 'p_asset_details' is now an array
+        if (isset($data['p_asset_details']) && is_array($data['p_asset_details'])) {
+            $modifiedAssetDetails = array_map(function($asset) {
+                if (isset($asset['selectedUser']['id'])) {
+                    $asset['selectedUser'] = $asset['selectedUser']['id'];
+                }
+                return $asset;
+            }, $data['p_asset_details']);
+
+            $p_asset_details = json_encode($modifiedAssetDetails, JSON_UNESCAPED_SLASHES);
+        } else {
+            // Fallback mechanism: set $p_asset_details to an empty array or a default value
+            throw new \Exception("Invalid input: 'p_asset_details' must be an array.");
+        }
         DB::beginTransaction();
 
         try {
