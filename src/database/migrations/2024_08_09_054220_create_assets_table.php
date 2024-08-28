@@ -47,8 +47,8 @@ return new class extends Migration
             $table->foreign('assets_type')->references('id')->on('assets_types')->onDelete('restrict');
             $table->foreign('category')->references('id')->on('asset_categories')->onDelete('restrict');
             $table->foreign('sub_category')->references('id')->on('asset_sub_categories')->onDelete('restrict');
-            $table->foreign('supplier')->references('id')->on('supplair')->onDelete('restrict');
-            $table->foreign('purchase_type')->references('id')->on('assest_requisition_availability_type')->onDelete('restrict');
+            $table->foreign('supplier')->references('id')->on('suppliers')->onDelete('restrict');
+            $table->foreign('purchase_type')->references('id')->on('asset_requisition_availability_types')->onDelete('restrict');
             $table->foreign('responsible_person')->references('id')->on('users')->onDelete('restrict');
             $table->foreign('department')->references('id')->on('organization')->onDelete('restrict');
             $table->foreign('registered_by')->references('id')->on('users')->onDelete('restrict'); // Prevents cascading delete

@@ -70,9 +70,9 @@ return new class extends Migration
                 INNER JOIN
                     asset_sub_categories assc ON a.sub_category = assc.id
                 INNER JOIN
-                    supplair s ON a.supplier = s.id
+                    suppliers s ON a.supplier = s.id
                 INNER JOIN
-                    assest_requisition_availability_type arat ON a.purchase_type = arat.id
+                    assest_requisition_availability_types arat ON a.purchase_type = arat.id
                 INNER JOIN
                     users u ON a.responsible_person = u.id
                 INNER JOIN

@@ -12,10 +12,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::unprepared(
-            "CREATE OR REPLACE PROCEDURE STORE_PROCEDURE_RETRIEVE_ITEM_TYPES( 
+        DB::unprepared(<<<SQL
+            CREATE OR REPLACE PROCEDURE STORE_PROCEDURE_RETRIEVE_ITEM_TYPES( 
                 IN p_item_type_id INT DEFAULT NULL
             )
+            LANGUAGE plpgsql
             AS $$
             BEGIN
                 DROP TABLE IF EXISTS item_type_from_store_procedure;
@@ -36,9 +37,10 @@ return new class extends Migration
                 WHERE
                     (it.id = p_item_type_id OR p_item_type_id IS NULL OR p_item_type_id = 0)
                     AND it.deleted_at IS NULL
-                    AND it.isActive = TRUE;
+                    AND it."isActive" = TRUE;
             END;
-            $$ LANGUAGE plpgsql;"
+            $$ ;
+            SQL
         );
     }
 

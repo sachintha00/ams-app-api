@@ -12,10 +12,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::unprepared(
-            "CREATE OR REPLACE PROCEDURE STORE_PROCEDURE_RETRIEVE_AVAILABILITY_TYPES( 
+        DB::unprepared(<<<SQL
+            CREATE OR REPLACE PROCEDURE STORE_PROCEDURE_RETRIEVE_AVAILABILITY_TYPES( 
                 IN p_availability_type_id INT DEFAULT NULL
             )
+            LANGUAGE plpgsql
             AS $$
             BEGIN
                 DROP TABLE IF EXISTS availability_type_from_store_procedure;
@@ -32,13 +33,14 @@ return new class extends Migration
                     arat.created_at,
                     arat.updated_at
                 FROM
-                    assest_requisition_availability_type arat
+                    asset_requisition_availability_types arat
                 WHERE
                     (arat.id = p_availability_type_id OR p_availability_type_id IS NULL OR p_availability_type_id = 0)
                     AND arat.deleted_at IS NULL
-                    AND arat.isActive = TRUE;
+                    AND arat."isActive" = TRUE;
             END;
-            $$ LANGUAGE plpgsql;"
+            $$;
+            SQL
         );
     }
 

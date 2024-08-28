@@ -4,9 +4,9 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\assest_requisition_priority_type;
+use App\Models\Asset_requisition_priority_type;
 
-class assest_requisition_priority_typeSeeder extends Seeder
+class Asset_requisition_priority_typesSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -34,7 +34,7 @@ class assest_requisition_priority_typeSeeder extends Seeder
 
         // Seed multiple period_type
         foreach ($priority_type as $Priority_type) {
-            assest_requisition_priority_type::create($Priority_type);
+            Asset_requisition_priority_type::create($Priority_type);
         }
     }
 }

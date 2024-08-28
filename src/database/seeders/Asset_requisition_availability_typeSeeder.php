@@ -4,9 +4,9 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\assest_requisition_availability_type;
+use App\Models\Asset_requisition_availability_types;
 
-class assest_requisition_availability_typeSeeder extends Seeder
+class Asset_requisition_availability_typeSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -34,7 +34,7 @@ class assest_requisition_availability_typeSeeder extends Seeder
 
         // Seed multiple period_type
         foreach ($availability_type as $Availability_type) {
-            assest_requisition_availability_type::create($Availability_type);
+            asset_requisition_availability_types::create($Availability_type);
         }
     }
 }

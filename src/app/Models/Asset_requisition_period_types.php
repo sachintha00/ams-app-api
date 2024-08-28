@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class assest_requisition_period_type extends Model
+class Asset_requisition_period_types extends Model
 {
     use HasFactory; 
 
-    public $table = "assest_requisition_period_type";
+    public $table = "asset_requisition_period_types";
 
     protected $fillable = [
         'name',

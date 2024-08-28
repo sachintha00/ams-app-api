@@ -26,7 +26,7 @@ class WorkflowController extends Controller
                 $request->input('workflow_status')
             );
 
-            return response()->json(["message" => 'Successfull added workflow', 'workflow_id' => $result], 200);
+            return response()->json(["message" => 'Successful added workflow', 'workflow_id' => $result], 200);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to add new workflow'], 500);
         }
@@ -43,7 +43,7 @@ class WorkflowController extends Controller
                 $request->input('workflow_id')
             );
 
-            return response()->json(["message" => 'Successfull updated workflow', 'workflow_id' => $result], 200);
+            return response()->json(["message" => 'Successful updated workflow', 'workflow_id' => $result], 200);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to add new workflow'], 500);
         }
@@ -99,6 +99,7 @@ class WorkflowController extends Controller
         try {
             $workflowId = (int)$workflow_id;
             $workflowDetails = $this->workflowService->retrieveWorkflow($workflowId);
+
         
             return response()->json(['data' => $workflowDetails], 200);
         } catch (\Exception $e) {

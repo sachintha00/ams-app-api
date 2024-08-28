@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class assest_requisition_priority_type extends Model
+class Asset_requisition_availability_types extends Model
 {
     use HasFactory;
 
-    public $table = "assest_requisition_priority_type";
+    public $table = "asset_requisition_availability_types";
 
     protected $fillable = [
         'name',

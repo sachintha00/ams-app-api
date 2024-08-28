@@ -4,9 +4,9 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\assest_requisition_period_type;
+use App\Models\Asset_requisition_period_types;
 
-class assest_requisition_period_typeSeeder extends Seeder
+class Asset_requisition_period_typesSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -34,7 +34,7 @@ class assest_requisition_period_typeSeeder extends Seeder
 
         // Seed multiple period_type
         foreach ($period_type as $Period_type) {
-            assest_requisition_period_type::create($Period_type);
+            Asset_requisition_period_types::create($Period_type);
         }
     }
 }

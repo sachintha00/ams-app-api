@@ -12,10 +12,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::unprepared(
-            "CREATE OR REPLACE PROCEDURE STORE_PROCEDURE_GET_ALL_USER_ASSET_REQUISITIONS( 
+        DB::unprepared(<<<SQL
+            CREATE OR REPLACE PROCEDURE STORE_PROCEDURE_GET_ALL_USER_ASSET_REQUISITIONS( 
                 IN p_user_id INT DEFAULT NULL
             )
+            LANGUAGE plpgsql
             AS $$
             BEGIN
                 DROP TABLE IF EXISTS get_all_user_asset_requisitions_from_store_procedure;
@@ -26,7 +27,7 @@ return new class extends Migration
             
                 CREATE TEMP TABLE get_all_user_asset_requisitions_from_store_procedure AS
                 SELECT
-					ar.id AS asset_requisitions_id,
+                    ar.id AS asset_requisitions_id,
                     ar.requisition_id,
                     ar.requisition_by,
                     ar.requisition_date,
@@ -70,11 +71,12 @@ return new class extends Migration
                 WHERE
                     (u.id = p_user_id OR p_user_id IS NULL OR p_user_id = 0)
                     AND u.deleted_at IS NULL
-                    AND u.isActive = TRUE
+                    AND u."isActive" = TRUE
                 GROUP BY
-                ar.id;
+                    ar.id;
             END;
-            $$ LANGUAGE plpgsql;"
+            $$;
+            SQL
         );
     }
 

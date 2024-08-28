@@ -7,10 +7,11 @@ return new class extends Migration
 {
     public function up(): void
     {
-        DB::unprepared(
-            "CREATE OR REPLACE PROCEDURE STORE_PROCEDURE_RETRIEVE_WORKFLOW(
+        DB::unprepared(<<<SQL
+            CREATE OR REPLACE PROCEDURE STORE_PROCEDURE_RETRIEVE_WORKFLOW(
                 IN p_workflow_id INT DEFAULT NULL
             )
+            LANGUAGE plpgsql
             AS $$
             BEGIN
                 DROP TABLE IF EXISTS workflow_from_store_procedure;
@@ -21,9 +22,10 @@ return new class extends Migration
                 WHERE
                     (workflows.id = p_workflow_id OR p_workflow_id IS NULL OR p_workflow_id = 0)
                     AND workflows.deleted_at IS NULL
-                    AND workflows.isActive = TRUE;
+                    AND workflows."isActive" = TRUE;
             END;
-            $$ LANGUAGE plpgsql;"
+            $$;
+            SQL
         );
     }
 

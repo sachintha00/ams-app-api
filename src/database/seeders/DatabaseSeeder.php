@@ -17,9 +17,9 @@ class DatabaseSeeder extends Seeder
         $this->call(PrefixesSeeder::class);
         $this->call(AssetTypesSeeder::class);
 
-        // $this->call(assest_requisition_availability_typeSeeder::class);
-        // $this->call(assest_requisition_period_typeSeeder::class);
-        // $this->call(assest_requisition_priority_typeSeeder::class);
+        $this->call(Asset_requisition_availability_typeSeeder::class);
+        $this->call(Asset_requisition_period_typesSeeder::class);
+        $this->call(Asset_requisition_priority_typesSeeder::class);
 
         // $this->call(DrawerDataSeeder::class);
 

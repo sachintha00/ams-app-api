@@ -12,10 +12,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::unprepared(
-            "CREATE OR REPLACE PROCEDURE STORE_PROCEDURE_RETRIEVE_PERIOD_TYPES(  
+        DB::unprepared(<<<SQL
+            CREATE OR REPLACE PROCEDURE STORE_PROCEDURE_RETRIEVE_PERIOD_TYPES(  
                 IN p_period_type_id INT DEFAULT NULL
             )
+            LANGUAGE plpgsql
             AS $$
             BEGIN
                 DROP TABLE IF EXISTS period_type_from_store_procedure;
@@ -32,13 +33,14 @@ return new class extends Migration
                     arpt.created_at,
                     arpt.updated_at
                 FROM
-                    assest_requisition_period_type arpt
+                    asset_requisition_period_types arpt
                 WHERE
                     (arpt.id = p_period_type_id OR p_period_type_id IS NULL OR p_period_type_id = 0)
                     AND arpt.deleted_at IS NULL
-                    AND arpt.isActive = TRUE;
+                    AND arpt."isActive" = TRUE;
             END;
-            $$ LANGUAGE plpgsql;"
+            $$;
+            SQL
         );
     }
 

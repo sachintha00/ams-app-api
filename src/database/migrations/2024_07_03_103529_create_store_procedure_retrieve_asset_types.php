@@ -7,24 +7,26 @@ return new class extends Migration
 {
     public function up(): void
     {
-        DB::unprepared(
-            "CREATE OR REPLACE PROCEDURE STORE_PROCEDURE_RETRIEVE_ASSET_TYPES(
+        DB::unprepared(<<<SQL
+            CREATE OR REPLACE PROCEDURE STORE_PROCEDURE_RETRIEVE_ASSET_TYPES(
                 IN p_asset_type_id INT DEFAULT NULL
             )
+            LANGUAGE plpgsql
             AS $$
             BEGIN
                 DROP TABLE IF EXISTS asset_types_from_store_procedure;
 
                 CREATE TEMP TABLE asset_types_from_store_procedure AS
-                SELECT * FROM
-                    assets_types 
+                SELECT * 
+                FROM assets_types 
                 WHERE
                     (assets_types.id = p_asset_type_id OR p_asset_type_id IS NULL OR p_asset_type_id = 0)
                     AND assets_types.deleted_at IS NULL
-                    AND assets_types.isActive = TRUE
+                    AND assets_types."isActive" = TRUE
                 ORDER BY assets_types.id;
             END;
-            $$ LANGUAGE plpgsql;"
+            $$;
+            SQL
         );
     }
 

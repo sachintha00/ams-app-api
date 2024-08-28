@@ -12,10 +12,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::unprepared(
-            "CREATE OR REPLACE PROCEDURE STORE_PROCEDURE_RETRIEVE_PRIORITY_TYPES( 
+        DB::unprepared(<<<SQL
+            CREATE OR REPLACE PROCEDURE STORE_PROCEDURE_RETRIEVE_PRIORITY_TYPES( 
                 IN p_priority_type_id INT DEFAULT NULL
             )
+            LANGUAGE plpgsql
             AS $$
             BEGIN
                 DROP TABLE IF EXISTS priority_type_from_store_procedure;
@@ -32,13 +33,14 @@ return new class extends Migration
                     arprt.created_at,
                     arprt.updated_at
                 FROM
-                    assest_requisition_priority_type arprt
+                    asset_requisition_priority_types arprt
                 WHERE
                     (arprt.id = p_priority_type_id OR p_priority_type_id IS NULL OR p_priority_type_id = 0)
-                    AND w.deleted_at IS NULL
-                    AND w.isActive = TRUE;
+                    AND arprt.deleted_at IS NULL
+                    AND arprt."isActive" = TRUE;
             END;
-            $$ LANGUAGE plpgsql;"
+            $$;
+            SQL
         );
     }
 
