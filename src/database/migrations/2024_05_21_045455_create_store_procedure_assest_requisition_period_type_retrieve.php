@@ -13,7 +13,7 @@ return new class extends Migration
     public function up(): void
     {
         DB::unprepared(
-            "CREATE OR REPLACE PROCEDURE STORE_PROCEDURE_RETRIEVE_PERIOD_TYPES( 
+            "CREATE OR REPLACE PROCEDURE STORE_PROCEDURE_RETRIEVE_PERIOD_TYPES(  
                 IN p_period_type_id INT DEFAULT NULL
             )
             AS $$

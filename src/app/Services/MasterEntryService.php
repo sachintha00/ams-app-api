@@ -41,4 +41,14 @@ class MasterEntryService
     {
         return $this->MasterEntryRepository->getAssetTypes();
     }
+
+    public function getAllAssetCategories()
+    {
+        return $this->MasterEntryRepository->getAllAssetCategories();
+    }
+
+    public function getAllDesignations()
+    {
+        return $this->MasterEntryRepository->getAllDesignations();
+    }
 }

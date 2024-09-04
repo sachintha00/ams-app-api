@@ -185,6 +185,7 @@ class WorkflowRequestService
     ){
         try {
             // dd($requestId);
+            // Log::info($requisitionId, $requestTypeId);
             
             if($requestTypeId === 1 && $status === "APPROVED"){
                 DB::statement('CALL STORE_PROCEDURE_UPDATE_DATA(?, ?, ?)', [

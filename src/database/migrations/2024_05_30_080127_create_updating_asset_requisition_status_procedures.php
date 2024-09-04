@@ -24,7 +24,7 @@ return new class extends Migration
                 WHERE requisition_id = _requestId;
 
                 COMMIT;
-            END;
+            END; 
             $$;
         ');
     }

@@ -40,8 +40,10 @@ class User extends Authenticatable
         'is_trial_account',
         'user_description',
         'status',
+        'is_owner',
         'created_user',
         'tenant_db_name',
+        'designation_id',
     ];
 
     /**
@@ -69,5 +71,10 @@ class User extends Authenticatable
         return LogOptions::defaults()
         ->logOnly(['*']);
         // Chain fluent methods for configuration options
+    }
+
+    public function designation()
+    {
+        return $this->belongsTo(DesignationModel::class, 'designation_id');
     }
 }

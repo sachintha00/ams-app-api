@@ -33,6 +33,7 @@ return new class extends Migration
             $table->timestamp('first_login')->nullable();
             $table->string('user_description')->nullable();
             $table->boolean('status')->default(false);
+            $table->boolean('is_owner')->default(false);
             $table->string('created_user')->nullable();
             $table->string('tenant_db_name')->nullable();
             $table->rememberToken();
