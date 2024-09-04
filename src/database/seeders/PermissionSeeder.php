@@ -21,7 +21,7 @@ class PermissionSeeder extends Seeder
                 'parent_id' => null,
             ],
             [
-                'name' => 'view role',
+                'name' => 'Role',
                 'guard_name' => 'api',
                 'description' => 'test',
                 'parent_id' => 1,
@@ -51,7 +51,7 @@ class PermissionSeeder extends Seeder
                 'parent_id' => 2,
             ],
             [
-                'name' => 'view user',
+                'name' => 'Users',
                 'guard_name' => 'api',
                 'description' => 'test',
                 'parent_id' => 1,
@@ -307,6 +307,36 @@ class PermissionSeeder extends Seeder
                 'guard_name' => 'api',
                 'description' => 'test',
                 'parent_id' => 44,
+            ],
+            [
+                'name' => 'Assets Management',
+                'guard_name' => 'api',
+                'description' => 'test',
+                'parent_id' => 26,
+            ],
+            [
+                'name' => 'Assets Record & Register ',
+                'guard_name' => 'api',
+                'description' => 'test',
+                'parent_id' => 50,
+            ],
+            [
+                'name' => 'View Assets Details',
+                'guard_name' => 'api',
+                'description' => 'test',
+                'parent_id' => 50,
+            ],
+            [
+                'name' => 'Update Assets Details',
+                'guard_name' => 'api',
+                'description' => 'test',
+                'parent_id' => 50,
+            ],
+            [
+                'name' => 'Delete Assets Details',
+                'guard_name' => 'api',
+                'description' => 'test',
+                'parent_id' => 50,
             ],
         ];
 

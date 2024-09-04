@@ -20,6 +20,8 @@ use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\AssetController;
 use App\Http\Controllers\ProcurementController;
 use App\Http\Controllers\PrefixController;
+use App\Http\Controllers\ImageController;
+use App\Http\Controllers\AssetsManagementController;
 
 use Illuminate\Support\Facades\Log;
 
@@ -69,7 +71,8 @@ Route::prefix('v1')->group(function(){
         Route::put('changeuserstatus/{id}', [UserController::class, 'changestatus']);
         Route::put('userpasswordreset/{id}', [UserController::class, 'passwordreset']);
         Route::delete('userdelete/{id}', [UserController::class, 'destroy']);
-        
+        Route::get('profile-image/{filename}', [ImageController::class, 'showProfileImages']);
+          
         Route::get("users", [UserController::class, "index"]); 
 
         Route::get("allpermissions", [PermisionController::class, "index"]);
@@ -148,7 +151,11 @@ Route::prefix('v1')->group(function(){
         Route::put("supplier/update", [SupplierController::class, "addOrUpdateSupplier"]); 
         Route::delete("supplier/remove/{supplier_id}", [SupplierController::class, "removeSupplier"]); 
 
-        
+        Route::get("all-assests", [AssetsManagementController::class, "index"]);
+        Route::post("add-new-assests", [AssetsManagementController::class, "store"]); 
+        Route::post('update-asset', [AssetsManagementController::class, 'update']);
+        Route::delete('delete-asset/{id}', [AssetsManagementController::class, 'destroy']);
+        Route::get('assets-image/{imagename}', [ImageController::class, 'showassetimages']);
     });
     Route::get("test", function (Request $request){
         // dd($request->header('name'));

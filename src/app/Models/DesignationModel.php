@@ -12,6 +12,8 @@ class DesignationModel extends Model
     protected $table = 'designations';
     
     protected $fillable = [
+        'id',
         'designation',
     ];
+    
 }

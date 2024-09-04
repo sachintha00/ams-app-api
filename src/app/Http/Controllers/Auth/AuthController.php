@@ -15,119 +15,144 @@ use App\Models\UserVerify;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
     public $successStatus = 200;
 
-    // public function login(Request $request) { 
-    //     // Validate user input
-    //     $validator = Validator::make($request->all(), [
-    //         'email' => 'required|email',
-    //         'password' => 'required',
-    //     ]);
+    public function login(Request $request) { 
+        // Validate user input
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
 
-    //     // If validation fails, return validation errors
-    //     if ($validator->fails()) {
-    //         return response()->json(['errors' => $validator->errors()], 422);
-    //     }
+        // If validation fails, return validation errors
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
 
-    //     $credentials = $request->only('email', 'password');
+        $credentials = $request->only('email', 'password');
         
 
-    //     // Call your pre-login API endpoint
-    //     $response = Http::timeout(15)->post('http://213.199.44.42:8000/api/v1/tenant_user_login', [
-    //         'email' => $credentials['email'],
-    //         'password' => $credentials['password'],
-    //     ]);
+        // Call your pre-login API endpoint
+        $response = Http::timeout(15)->post('http://213.199.44.42:8000/api/v1/tenant_user_login', [
+            'email' => $credentials['email'],
+            'password' => $credentials['password'],
+        ]);
 
-    //     // Check if the request was successful
-    //     if ($response->successful()) {
-    //         // Assign response data to a PHP variable
-    //         $responseData = $response->json();
+        // Check if the request was successful
+        if ($response->successful()) {
+            // Assign response data to a PHP variable
+            $responseData = $response->json();
 
-    //         // Access specific data from the response
-    //         $userdata = $responseData['user'];
-    //         $database = $userdata['tenant_db_name'];
+            // Access specific data from the response
+            $userdata = $responseData['user'];
+            $database = $userdata['tenant_db_name'];
+            $randomString = Str::random(27); 
+            $modifiedTenant = $randomString . $database; 
+            $TenantToken = Crypt::encrypt($modifiedTenant);
+
+            // $randomStringLength = 10;  // Length of the random string
+            // $decryptedTenant = Crypt::decrypt($encryptedTenant);  // Decrypt the value
             
-    //         // Set the database connection dynamically
-    //         Config(['database.connections.pgsql.database' => $database]);
-    //         DB::reconnect('pgsql');
-    //         // dd(DB::getDatabaseName());
-
-    //         if (Auth::attempt(['email' => request('email'), 'password' => request('password')])) { 
-    //             // $oClient = OClient::where('password_client', 1)->first();
-    //             // $http = new Client;
-    //             // $response = $http->request('POST', 'http://192.168.8.184:8000/oauth/token', [
-    //             //     'headers' => [
-    //             //         'X-API-Key' => '{{token}}',
-    //             //         'Dbname' => $database,
-    //             //     ],
-    //             //     'form_params' => [
-    //             //         'grant_type' => 'password',
-    //             //         'client_id' => $oClient->id,
-    //             //         'client_secret' => $oClient->secret,
-    //             //         'username' => request('email'),
-    //             //         'password' => request('password'),
-    //             //         'scope' => '*',
-    //             //     ],
-    //             // ]);
-
-    //             // $result = json_decode((string) $response->getBody(), true);
-    //             // return response()->json($result, $this->successStatus);
-    //             $user = Auth::user();
-    //             $token = $user->createToken('MyApp')->accessToken;
-    
-    //             return response()->json(['user' => $user, 'token' => $token, 'potral' => $responseData ], 200);
-    //         } 
-    //         else { 
-    //             return response()->json(['error'=>'Unauthorised'], 401); 
-    //         } 
-    //     }else {
-    //         // Handle the case where the API request failed
-    //         return response()->json(['error'=>'Unauthorised'], 401); 
-    //         // Log error or perform error handling
-    //     }
-    // }
-    
-    public function login(UserLoginRequest $request) { 
-        try {
-            if (Auth::attempt(['email' => request('email'), 'password' => request('password')])) {
-                $user = Auth::user();
-
-                $tokenResult = $user->createToken('Personal Access Token');
-                $token = $tokenResult->token;
-                
-                if ($request->remember_me) {
-                    $token->expires_at = Carbon::now()->addWeeks(1);
-                }
-                $token->save();
-
-                // $tokenResult = $this->getTokenAndRefreshToken(Auth::User()->email, $request->password);
+            // // Remove the random string by slicing the string from the position after the random string
+            // $originalTenant = substr($decryptedTenant, $randomStringLength);
+            // dd($originalTenant);
+            
+            // Set the database connection dynamically
+            Config(['database.connections.pgsql.database' => $database]);
+            DB::reconnect('pgsql');
+            // dd(DB::getDatabaseName());
 
 
-                // activity('user login')->log($user->user_name.' login to system');
-    
-                return response()->json([
-                    'user' => $user,
-                    'access_token' => $tokenResult->accessToken,
-                    'token_type' => 'Bearer',
-                    'expires_at' => Carbon::parse($token->expires_at)->toDateTimeString(),
-                ]);
-                // $userdata = Auth::user();
+            if (Auth::attempt(['email' => request('email'), 'password' => request('password')])) { 
                 // $oClient = OClient::where('password_client', 1)->first();
-                // return $this->getTokenAndRefreshToken($oClient, request('email'), request('password'));
+                // $http = new Client;
+                // $response = $http->request('POST', 'http://192.168.8.184:8000/oauth/token', [
+                //     'headers' => [
+                //         'X-API-Key' => '{{token}}',
+                //         'Dbname' => $database,
+                //     ],
+                //     'form_params' => [
+                //         'grant_type' => 'password',
+                //         'client_id' => $oClient->id,
+                //         'client_secret' => $oClient->secret,
+                //         'username' => request('email'),
+                //         'password' => request('password'),
+                //         'scope' => '*',
+                //     ],
+                // ]);
+
+                // $result = json_decode((string) $response->getBody(), true);
+                // return response()->json($result, $this->successStatus);
+                $user = Auth::user();
+                $user->load('designation');
+                // Remove the tenant_db_name field
+                $userArray = $user->toArray();  // Convert the user object to an array
+                unset($userArray['tenant_db_name']);  // Remove the tenant_db_name key
+
+                $token = $user->createToken('MyApp')->accessToken;
+    
+                return response()->json(
+                    [
+                        'user' => $userArray, 
+                        'access_token' => $token, 
+                        'tenant_token' => $TenantToken,
+                        'potral' => $responseData 
+                    ]
+                , 200);
             } 
             else { 
                 return response()->json(['error'=>'Unauthorised'], 401); 
-            }
-        } catch (\Throwable $th) {
-                    return response()->json([
-                        'status' => false,
-                        'message' => $th->getMessage()
-                    ], 500);
+            } 
+        }else {
+            // Handle the case where the API request failed
+            return response()->json(['error'=>'Unauthorised'], 401); 
+            // Log error or perform error handling
         }
     }
+    
+    // public function login(UserLoginRequest $request) { 
+    //     try {
+    //         if (Auth::attempt(['email' => request('email'), 'password' => request('password')])) {
+    //             $user = Auth::user();
+
+    //             $tokenResult = $user->createToken('Personal Access Token');
+    //             $token = $tokenResult->token;
+                
+    //             if ($request->remember_me) {
+    //                 $token->expires_at = Carbon::now()->addWeeks(1);
+    //             }
+    //             $token->save();
+
+    //             // $tokenResult = $this->getTokenAndRefreshToken(Auth::User()->email, $request->password);
+
+
+    //             // activity('user login')->log($user->user_name.' login to system');
+    
+    //             return response()->json([
+    //                 'user' => $user,
+    //                 'access_token' => $tokenResult->accessToken,
+    //                 'token_type' => 'Bearer',
+    //                 'expires_at' => Carbon::parse($token->expires_at)->toDateTimeString(),
+    //             ]);
+    //             // $userdata = Auth::user();
+    //             // $oClient = OClient::where('password_client', 1)->first();
+    //             // return $this->getTokenAndRefreshToken($oClient, request('email'), request('password'));
+    //         } 
+    //         else { 
+    //             return response()->json(['error'=>'Unauthorised'], 401); 
+    //         }
+    //     } catch (\Throwable $th) {
+    //                 return response()->json([
+    //                     'status' => false,
+    //                     'message' => $th->getMessage()
+    //                 ], 500);
+    //     }
+    // }
 
     public function getTokenAndRefreshToken($email, $password) { 
         $oClient = OClient::where('password_client', 1)->first();

@@ -68,7 +68,7 @@ class ProcurementRepository
                 $data['date'],
                 json_encode($data['selected_items']),
                 json_encode($data['selected_suppliers']), 
-                json_encode($data['rpf_document']),
+                json_encode($data['rpf_document']), 
                 json_encode($data['attachment']),
                 $data['requered_date'],
                 $data['comment'],
@@ -155,7 +155,7 @@ class ProcurementRepository
         $procurements = DB::table('procurements_from_store_procedure')->select('*')->get();
 
         foreach ($procurements as $procurement) {            
-            if ($procurement->selected_items) {
+            if ($procurement->selected_items) { 
                 $procurement->selected_items = json_decode($procurement->selected_items);
 
                 if (is_string($procurement->selected_items)) {
