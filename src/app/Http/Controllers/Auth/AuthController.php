@@ -94,7 +94,7 @@ class AuthController extends Controller
                 $userArray = $user->toArray();  // Convert the user object to an array
                 unset($userArray['tenant_db_name']);  // Remove the tenant_db_name key
 
-                $token = $user->createToken('MyApp')->accessToken;
+                $token = $user->createToken('MyApp')->accessToken;    
     
                 return response()->json(
                     [
